@@ -2,7 +2,7 @@ import axios from "axios";
 import type { AxiosRequestConfig } from "axios";
 import { toast } from "sonner";
 import { store } from "../store/index";
-import { refreshToken } from "./refreshToken.api";
+import { refreshTokenOnce } from "./refreshToken.api";
 import { setAccessToken, clearCredentials } from "../store/slices/userSlice";
 
 export const api = axios.create({
@@ -32,7 +32,7 @@ api.interceptors.response.use(
       if (!originalRequest._retry) {
         originalRequest._retry = true;
         try {
-          const data = await refreshToken();
+          const data = await refreshTokenOnce();
           store.dispatch(setAccessToken(data.accessToken));
           originalRequest.headers.Authorization = `Bearer ${data.accessToken}`;
           return api(originalRequest);
@@ -48,7 +48,6 @@ api.interceptors.response.use(
           toast.error("Session expired. Please login again.");
           
           // Redirect to login page
-          window.location.href = "/login";
           return Promise.reject(err);
         }
       }
