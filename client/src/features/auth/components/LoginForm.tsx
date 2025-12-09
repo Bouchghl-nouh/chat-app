@@ -57,7 +57,7 @@ export function LoginForm() {
       </FieldGroup>
       <CardFooter className="flex-col gap-2 mt-4">
         <Button type="submit" className="w-full" disabled={loginUser.isPending}>
-          Sign in
+          login
         </Button>
       </CardFooter>
     </form>

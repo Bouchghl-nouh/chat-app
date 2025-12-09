@@ -1,9 +1,12 @@
-import {useMutation, useQueryClient} from "@tanstack/react-query"
+import {useMutation} from "@tanstack/react-query"
 import {register} from "@/features/auth/api/register.api"
-
+import { useNavigate } from "react-router-dom";
 export function useRegisterUser(){
-    const queryClient = useQueryClient();
+    const navigate = useNavigate();
     return useMutation({
-        mutationFn: register
+        mutationFn: register,
+        onSuccess:()=>{
+            navigate("/login");
+        }
     });
 }

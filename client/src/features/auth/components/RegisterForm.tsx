@@ -82,7 +82,7 @@ export function RegisterForm() {
       </FieldGroup>
       <CardFooter className="flex-col gap-2 mt-4">
         <Button type="submit" className="w-full" disabled={registerUser.isPending}>
-          Create Account
+          register
         </Button>
       </CardFooter>
     </form>

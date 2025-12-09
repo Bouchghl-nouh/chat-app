@@ -3,25 +3,31 @@ import App from "../App.tsx";
 import { authRoutes } from "../features/auth/routes.tsx";
 import Dashboard from "../features/dashboard";
 import ProtectedRoute from "@/components/ProtectedRoute.tsx";
+import { RootLayout } from "@/components/RootLayout.tsx";
 export const routes = createBrowserRouter([
-  ...authRoutes,
   {
-    path: "/",
-    element: <ProtectedRoute />,
+    element: <RootLayout />,
     children: [
+      ...authRoutes,
       {
-        index: true,
-        element: <App />,
+        path: "/",
+        element: <ProtectedRoute />,
+        children: [
+          {
+            index: true,
+            element: <App />,
+          },
+          {
+            path: "dashboard",
+            element: <Dashboard />,
+          },
+        ],
       },
       {
-        path: "dashboard",
-        element: <Dashboard />,
+        path: "*",
+        element: <h1>Not found</h1>,
       },
     ],
-  },
-  {
-    path: "*",
-    element: <h1>Not found</h1>,
   },
 ]);
 

@@ -24,7 +24,6 @@ logs/
 .vscode/
 .idea/
 *.swp
-
 # Misc
 *.bak
 *.tmp

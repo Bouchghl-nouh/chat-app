@@ -1,6 +1,6 @@
 import { http } from "@/api/base";
 
-interface RegisterRequest {
+export interface RegisterRequest {
   username: string;
   email: string;
   password: string;

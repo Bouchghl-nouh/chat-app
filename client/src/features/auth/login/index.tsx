@@ -17,8 +17,10 @@ export function LoginPage() {
         <CardHeader>
           <CardTitle>Sign in</CardTitle>
           <CardDescription>
-            Enter your email and password below to <br />
+            Enter your email and password below to 
             log into your account
+            <br />
+            you don't have an account? <Link to="../register" className="underline underline-offset-2">Register</Link>
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -26,8 +28,6 @@ export function LoginPage() {
           <Footer />
         </CardContent>
       </Card>
-      <Link to="/dashboard">dashboard</Link>
-      <Link to="/">test</Link>
     </AuthLayout>
   );
 }
