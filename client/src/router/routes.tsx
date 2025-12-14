@@ -1,5 +1,4 @@
 import { createBrowserRouter } from "react-router";
-import App from "../App.tsx";
 import { authRoutes } from "../features/auth/routes.tsx";
 import Dashboard from "../features/dashboard";
 import ProtectedRoute from "@/components/ProtectedRoute.tsx";
@@ -14,11 +13,7 @@ export const routes = createBrowserRouter([
         element: <ProtectedRoute />,
         children: [
           {
-            index: true,
-            element: <App />,
-          },
-          {
-            path: "dashboard",
+            index:true,
             element: <Dashboard />,
           },
         ],
