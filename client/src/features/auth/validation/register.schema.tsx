@@ -15,3 +15,4 @@ export const registerSchema = z
     error: "Passwords do not match",
   });
 export type RegisterFormSchema = z.infer<typeof registerSchema>;
+export type RegisterRequest = Omit<RegisterFormSchema, 'confirmPassword'>;

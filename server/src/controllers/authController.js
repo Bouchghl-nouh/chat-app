@@ -1,6 +1,6 @@
 const authService = require("../services/authService");
 const authConfig = require("../config/auth").current.tokens;
-const { sendResponse } = require("../utils/responseHandler");
+const  sendResponse  = require("../utils/responseHandler");
 
 class AuthController {
   async register(req, res) {

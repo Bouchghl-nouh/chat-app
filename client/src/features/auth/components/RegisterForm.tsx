@@ -2,7 +2,6 @@ import { registerSchema } from "../validation/register.schema";
 import type { RegisterFormSchema } from "../validation/register.schema";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
   Field,
@@ -10,6 +9,7 @@ import {
   FieldGroup,
   FieldLabel,
 } from "@/components/ui/field";
+import { Loader2 } from "lucide-react";
 
 import PasswordInputWithToggle from "./PasswordInput";
 import { Input } from "@/components/ui/input";
@@ -24,28 +24,27 @@ export function RegisterForm() {
   });
   const registerUser = useRegisterUser();
   const onSubmit = (data: RegisterFormSchema) => {
-    registerUser.mutate(data);
+    const {confirmPassword,...payload} = data;
+    registerUser.mutate(payload);
   };
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <FieldGroup>
         <Field>
           <FieldLabel htmlFor="username">Full Name</FieldLabel>
           <Input
             id="username"
             placeholder="John Doe"
-            sizeVariant="sm"
             className={errors.username ? "border-red-500" : ""}
             {...register("username")}
           />
           {errors.username && <FieldError>{errors.username.message}</FieldError>}
         </Field>
         <Field>
-          <FieldLabel htmlFor="email">Email</FieldLabel>
+          <FieldLabel htmlFor="email">Email address</FieldLabel>
           <Input
             id="email"
-            placeholder="m@example.com"
-            sizeVariant="sm"
+            placeholder="you@example.com"
             className={errors.email ? "border-red-500" : ""}
             {...register("email")}
           />
@@ -55,9 +54,8 @@ export function RegisterForm() {
           <FieldLabel htmlFor="password">Password</FieldLabel>
           <PasswordInputWithToggle
             id="password"
-            placeholder="********"
-            sizeVariant="sm"
-            aria-invalid={!!errors.password} // for screen readers
+            placeholder="Create a password"
+            aria-invalid={!!errors.password}
             className={errors.password ? "border-red-500" : ""}
             {...register("password")}
           />
@@ -69,9 +67,8 @@ export function RegisterForm() {
           <FieldLabel htmlFor="confirmPassword">Confirm Password</FieldLabel>
           <PasswordInputWithToggle
             id="confirmPassword"
-            placeholder="********"
-            sizeVariant="sm"
-            aria-invalid={!!errors.confirmPassword} // for screen readers
+            placeholder="Confirm your password"
+            aria-invalid={!!errors.confirmPassword}
             className={errors.confirmPassword ? "border-red-500" : ""}
             {...register("confirmPassword")}
           />
@@ -80,11 +77,29 @@ export function RegisterForm() {
           )}
         </Field>
       </FieldGroup>
-      <CardFooter className="flex-col gap-2 mt-4">
-        <Button type="submit" className="w-full" disabled={registerUser.isPending}>
-          register
-        </Button>
-      </CardFooter>
+      
+      <Button 
+        type="submit" 
+        className="w-full" 
+        size="lg"
+        disabled={registerUser.isPending}
+      >
+        {registerUser.isPending ? (
+          <>
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            Creating account...
+          </>
+        ) : (
+          "Create account"
+        )}
+      </Button>
+      
+      <p className="text-xs text-center text-muted-foreground">
+        By creating an account, you agree to our{" "}
+        <button type="button" className="underline hover:text-foreground">Terms of Service</button>
+        {" "}and{" "}
+        <button type="button" className="underline hover:text-foreground">Privacy Policy</button>
+      </p>
     </form>
   );
 }

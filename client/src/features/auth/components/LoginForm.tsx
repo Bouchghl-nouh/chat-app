@@ -2,7 +2,6 @@ import { loginSchema } from "../validation/login.schema";
 import type { LoginFormSchema } from "../validation/login.schema";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
   Field,
@@ -10,6 +9,7 @@ import {
   FieldGroup,
   FieldLabel,
 } from "@/components/ui/field";
+import { Loader2 } from "lucide-react";
 
 import PasswordInputWithToggle from "../components/PasswordInput";
 import { Input } from "@/components/ui/input";
@@ -27,26 +27,29 @@ export function LoginForm() {
      loginUser.mutate(data);
   };
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <FieldGroup>
         <Field>
-          <FieldLabel htmlFor="email">Email</FieldLabel>
+          <FieldLabel htmlFor="email">Email address</FieldLabel>
           <Input
             id="email"
-            placeholder="m@example.com"
-            sizeVariant="sm"
+            placeholder="you@example.com"
             className={errors.email ? "border-red-500" : ""}
             {...register("email")}
           />
           {errors.email && <FieldError>{errors.email.message}</FieldError>}
         </Field>
         <Field>
-          <FieldLabel htmlFor="password">Password</FieldLabel>
+          <div className="flex items-center justify-between">
+            <FieldLabel htmlFor="password">Password</FieldLabel>
+            <button type="button" className="text-sm text-primary hover:underline">
+              Forgot password?
+            </button>
+          </div>
           <PasswordInputWithToggle
             id="password"
-            placeholder="********"
-            sizeVariant="sm"
-            aria-invalid={!!errors.password} // for screen readers
+            placeholder="Enter your password"
+            aria-invalid={!!errors.password}
             className={errors.password ? "border-red-500" : ""}
             {...register("password")}
           />
@@ -55,11 +58,22 @@ export function LoginForm() {
           )}
         </Field>
       </FieldGroup>
-      <CardFooter className="flex-col gap-2 mt-4">
-        <Button type="submit" className="w-full" disabled={loginUser.isPending}>
-          login
-        </Button>
-      </CardFooter>
+      
+      <Button 
+        type="submit" 
+        className="w-full" 
+        size="lg"
+        disabled={loginUser.isPending}
+      >
+        {loginUser.isPending ? (
+          <>
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            Signing in...
+          </>
+        ) : (
+          "Sign in"
+        )}
+      </Button>
     </form>
   );
 }

@@ -6,4 +6,4 @@
     data,
   });
 }
-module.exports = { sendResponse };
+module.exports =  sendResponse ;

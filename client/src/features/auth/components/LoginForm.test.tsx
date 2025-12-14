@@ -22,7 +22,7 @@ describe("LoginForm", () => {
     render(<LoginForm />);
     const emailInput = screen.getByLabelText(/email/i);
     const passwordInput = screen.getByLabelText(/password/i);
-    const submitButton = screen.getByRole("button", { name: /login/i });
+    const submitButton = screen.getByRole("button", { name: /Sign in/i });
     expect(emailInput).toBeInTheDocument();
     expect(passwordInput).toBeInTheDocument();
     expect(submitButton).toBeInTheDocument();
@@ -32,7 +32,7 @@ describe("LoginForm", () => {
     const user = userEvent.setup();
     render(<LoginForm />);
     const emailInput = screen.getByLabelText(/email/i);
-    const submitButton = screen.getByRole("button", { name: /login/i });
+    const submitButton = screen.getByRole("button", { name: /Sign in/i });
     await user.type(emailInput, "invalid-email");
     await user.click(submitButton);
     await waitFor(() => {
@@ -46,7 +46,7 @@ describe("LoginForm", () => {
     const user = userEvent.setup();
     render(<LoginForm />);
     const passwordInput = screen.getByLabelText(/password/i);
-    const submitButton = screen.getByRole("button", { name: /login/i });
+    const submitButton = screen.getByRole("button", { name: /Sign in/i });
     await user.type(passwordInput, "12");
     await user.click(submitButton);
     await waitFor(() => {
@@ -63,7 +63,7 @@ describe("LoginForm", () => {
     render(<LoginForm />);
     const emailInput = screen.getByLabelText(/email/i);
     const passwordInput = screen.getByLabelText(/password/i);
-    const submitButton = screen.getByRole("button", { name: /login/i });
+    const submitButton = screen.getByRole("button", { name: /Sign in/i });
     await user.type(emailInput, "valid@example.com");
     await user.type(passwordInput, "1234");
     await user.click(submitButton);
@@ -79,7 +79,8 @@ describe("LoginForm", () => {
       isPending: true,
     } as any);
     render(<LoginForm />);
-    const submitButton = screen.getByRole("button", { name: /login/i });
+    const submitButton = screen.getByRole("button", { name: /Signing in.../i });
+    expect(submitButton).toBeInTheDocument();
     expect(submitButton).toBeDisabled();
   });
 });

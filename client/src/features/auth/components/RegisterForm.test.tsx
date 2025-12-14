@@ -24,7 +24,7 @@ describe("RegisterForm", () => {
     const emailInput = screen.getByLabelText(/email/i);
     const passwordInput = screen.getByLabelText(/^password$/i);
     const confirmPasswordInput = screen.getByLabelText(/^confirm password$/i);
-    const submitButton = screen.getByRole("button", { name: /register/i });
+    const submitButton = screen.getByRole("button", { name: /Create account/i });
     expect(userNameInput).toBeInTheDocument();
     expect(emailInput).toBeInTheDocument();
     expect(passwordInput).toBeInTheDocument();
@@ -35,7 +35,7 @@ describe("RegisterForm", () => {
     const user = userEvent.setup();
     render(<RegisterForm />);
     const userNameInput = screen.getByLabelText(/full name/i);
-    const submitButton = screen.getByRole("button", { name: /register/i });
+    const submitButton = screen.getByRole("button", { name: /Create account/i });
     await user.type(userNameInput, "J");
     await user.click(submitButton);
     await waitFor(() => {
@@ -50,7 +50,7 @@ describe("RegisterForm", () => {
     const user = userEvent.setup();
     render(<RegisterForm />);
     const emailInput = screen.getByLabelText(/email/i);
-    const submitButton = screen.getByRole("button", { name: /register/i });
+    const submitButton = screen.getByRole("button", { name: /Create account/i });
     await user.type(emailInput, "invalid-email");
     await user.click(submitButton);
     await waitFor(() => {
@@ -65,7 +65,7 @@ describe("RegisterForm", () => {
     render(<RegisterForm />);
     const passwordInput = screen.getByLabelText(/^password$/i);
     const confirmPasswordInput = screen.getByLabelText(/^confirm password$/i);
-    const submitButton = screen.getByRole("button", { name: /register/i });
+    const submitButton = screen.getByRole("button", { name: /Create account/i });
     await user.type(passwordInput, "123");
     await user.type(confirmPasswordInput, "12");
     await user.click(submitButton);
@@ -84,7 +84,7 @@ describe("RegisterForm", () => {
     render(<RegisterForm />);
     const passwordInput = screen.getByLabelText(/^password$/i);
     const confirmPasswordInput = screen.getByLabelText(/^confirm password$/i);
-    const submitButton = screen.getByRole("button", { name: /register/i });
+    const submitButton = screen.getByRole("button", { name: /Create account/i });
     await user.type(passwordInput, "1234");
     await user.type(confirmPasswordInput, "4321");
     await user.click(submitButton);
@@ -103,7 +103,7 @@ describe("RegisterForm", () => {
     const emailInput = screen.getByLabelText(/email/i);
     const passwordInput = screen.getByLabelText(/^password$/i);
     const confirmPasswordInput = screen.getByLabelText(/^confirm password$/i);
-    const submitButton = screen.getByRole("button", { name: /register/i });
+    const submitButton = screen.getByRole("button", { name: /Create account/i });
     await user.type(userNameInput, "Joe");
     await user.type(emailInput, "valid@example.com");
     await user.type(passwordInput, "1234");
@@ -113,7 +113,6 @@ describe("RegisterForm", () => {
       username: "Joe",
       email: "valid@example.com",
       password: "1234",
-      confirmPassword: "1234",
     });
   });
 
@@ -123,7 +122,8 @@ describe("RegisterForm", () => {
         isPending: true,
       } as any);
       render(<RegisterForm />);
-      const submitButton = screen.getByRole("button", { name: /register/i });
+      const submitButton = screen.getByRole("button", { name: /Creating account/i });
+      expect(submitButton).toBeInTheDocument();
       expect(submitButton).toBeDisabled();
     });
 });

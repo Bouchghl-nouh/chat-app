@@ -1,10 +1,5 @@
 import { http } from "@/api/base";
-
-export interface RegisterRequest {
-  username: string;
-  email: string;
-  password: string;
-}
+import type { RegisterRequest } from "@/features/auth/validation/register.schema";
 
 export const register = async (data: RegisterRequest) => {
   return http.post("/auth/register", data);

@@ -55,7 +55,7 @@ describe("LoginPage Integration Tests", () => {
 
     const emailInput = screen.getByLabelText(/email/i);
     const passwordInput = screen.getByLabelText(/^password$/i);
-    const submitButton = screen.getByRole("button", { name: /login/i });
+    const submitButton = screen.getByRole("button", { name: /sign in/i });
     await user.type(emailInput, "email@gmail.com");
     await user.type(passwordInput, "Password123!");
     await user.click(submitButton);
@@ -84,7 +84,7 @@ describe("LoginPage Integration Tests", () => {
     renderLoginPage();
     const emailInput = screen.getByLabelText(/email/i);
     const passwordInput = screen.getByLabelText(/^password$/i);
-    const submitButton = screen.getByRole("button", { name: /login/i });
+    const submitButton = screen.getByRole("button", { name: /sign in/i });
     await user.type(emailInput, "notExisting@email.com");
     await user.type(passwordInput, "Password123!");
     await user.click(submitButton);

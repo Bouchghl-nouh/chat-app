@@ -53,7 +53,7 @@ describe("RegisterPage Integration Tests", () => {
     const usernameInput = screen.getByLabelText(/full name/i);
     const passwordInput = screen.getByLabelText(/^password$/i);
     const confirmPasswordInput = screen.getByLabelText(/^confirm password$/i);
-    const submitButton = screen.getByRole("button", { name: /register/i });
+    const submitButton = screen.getByRole("button", { name: /create account/i });
     await user.type(emailInput, "email@gmai.com");
     await user.type(usernameInput, "testuser");
     await user.type(passwordInput, "Password123!");
@@ -86,7 +86,7 @@ describe("RegisterPage Integration Tests", () => {
     const usernameInput = screen.getByLabelText(/full name/i);
     const passwordInput = screen.getByLabelText(/^password$/i);
     const confirmPasswordInput = screen.getByLabelText(/^confirm password$/i);
-    const submitButton = screen.getByRole("button", { name: /register/i });
+    const submitButton = screen.getByRole("button", { name: /create account/i });
     await user.type(emailInput, "existing@email.com");
     await user.type(usernameInput, "testuser");
     await user.type(passwordInput, "Password123!");

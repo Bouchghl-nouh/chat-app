@@ -1,4 +1,4 @@
-const { sendResponse } = require("@src/utils/responseHandler");
+const  sendResponse  = require("@src/utils/responseHandler");
 
 describe("sendResponse utility", () => {
   let res;
