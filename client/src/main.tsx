@@ -1,7 +1,7 @@
 import { StrictMode } from "react";
 import { RouterProvider } from "react-router/dom";
 import { createRoot } from "react-dom/client";
-import "./index.css";
+import "./styles/index.css";
 import routes from "./router/routes";
 import { store } from './store'
 import { Provider } from 'react-redux'

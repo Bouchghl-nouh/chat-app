@@ -3,11 +3,11 @@ import { Outlet } from "react-router";
 
 export function RootLayout() {
   return (
-    <>
-      <div className="absolute right-4 top-4 z-50">
+    <div className="h-screen flex flex-col">
+      <div className="absolute self-end px-4 py-2">
         <ThemeToggle />
       </div>
       <Outlet />
-    </>
+    </div>
   );
 }

@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
-import { logout } from "@/features/dashboard/api/logout.api";
+import { logout } from "@/features/chat/api/logout.api";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch } from "@/hooks/redux";
 import { clearCredentials } from "@/store/slices/userSlice";

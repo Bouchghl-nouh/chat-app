@@ -1,8 +1,8 @@
 import { createBrowserRouter } from "react-router";
 import { authRoutes } from "../features/auth/routes.tsx";
-import Dashboard from "../features/dashboard";
+import Chat from "../features/chat/index.tsx";
 import ProtectedRoute from "@/components/ProtectedRoute.tsx";
-import { RootLayout } from "@/components/RootLayout.tsx";
+import { RootLayout } from "@/components/layouts/RootLayout.tsx";
 export const routes = createBrowserRouter([
   {
     element: <RootLayout />,
@@ -14,7 +14,7 @@ export const routes = createBrowserRouter([
         children: [
           {
             index:true,
-            element: <Dashboard />,
+            element: <Chat />,
           },
         ],
       },
