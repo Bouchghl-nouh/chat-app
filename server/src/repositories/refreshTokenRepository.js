@@ -1,4 +1,4 @@
-const RefreshToken = require("../entities/refreshToken");
+const RefreshToken = require("../entities/refreshTokenSchema");
 
 class RefreshTokenRepository {
  async createToken(userId,token,expiresAt){
