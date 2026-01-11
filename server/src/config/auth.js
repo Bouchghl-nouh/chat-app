@@ -1,6 +1,6 @@
 const development = {
   tokens: {
-    accessTokenExpiry: "15m",
+    accessTokenExpiry: "1d",
     refreshTokenExpiry: "7d",
     refreshTokenExpiryDays: 7,
     bcryptRounds: 12,

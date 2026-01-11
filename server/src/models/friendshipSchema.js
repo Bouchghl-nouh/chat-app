@@ -18,6 +18,7 @@ const friendshipSchema = new mongoose.Schema(
       enum: ["pending", "accepted", "blocked"],
       default: "pending",
     },
+    statusChangedBy:{type:mongoose.Schema.Types.ObjectId,ref:"User"}
   },
   { timestamps: true }
 );

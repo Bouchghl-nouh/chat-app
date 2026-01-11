@@ -30,6 +30,11 @@ class AuthController {
       sendResponse( res,400,false, err.message );
     }
   }
+  async updatePassword(req,res){
+      await authService.updatePassword(req.user.id,req.body);
+      res.clearCookie("refreshToken");
+      sendResponse(res,200,true,"password updated successfully");
+  }
   async refreshAccessToken(req, res) {
     try {
       const { refreshToken } = req.cookies;

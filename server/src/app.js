@@ -3,41 +3,31 @@ const path = require("path");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const authRoutes = require("./routes/authRoutes");
-const verifyJWT = require("./middleware/verifyJWT");
+const userRoutes = require("./routes/userRoutes");
 const app = express();
 const helmet = require("helmet");
+const errorHandler = require("./middleware/errorHandler");
 // CORS configuration
-app.use(helmet());
 app.use(
   cors({
     origin: process.env.CLIENT_URL || "http://localhost:3001",
     credentials: true,
   })
 );
+app.use(helmet());
 
-app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 app.get("/api", (req, res) => {
   res.send("Server is running!");
 });
-
 // Routes
 app.use("/auth", authRoutes);
+app.use("/user", userRoutes);
 
-// Example protected route
-app.get("/profile", verifyJWT, (req, res) => {
-  res
-    .status(200)
-    .json({
-      message: `Welcome ${req.user.username}`,
-      data: req.user,
-      statusCode: 200,
-      success: true,
-    });
-});
-
+app.use(errorHandler);
 // Catch-all route for 404 errors - must be last
 app.use((req, res) => {
   res.status(404);

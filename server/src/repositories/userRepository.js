@@ -1,5 +1,4 @@
-const User = require("../entities/userSchema");
-
+const User = require("../models/userSchema");
 class UserRepository {
   async create(username,email, password) {
     return await User.create({ username,email,password });
@@ -12,6 +11,13 @@ class UserRepository {
   }
   async findById(id){
     return await User.findById(id);
+  }
+  async update(id,data){
+    return await User.findByIdAndUpdate(
+    id, 
+    { $set: data }, 
+    { new: true}
+  );
   }
 }
 

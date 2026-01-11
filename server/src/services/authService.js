@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const userRepo = require("../repositories/userRepository");
 const refreshTokenRepo = require("../repositories/refreshTokenRepository");
 const authConfig = require("../config/auth").current.tokens;
+const {NotFoundError,BadRequestError} = require("../utils/errorHandling");
 class AuthService {
   #generateTokenPair(user) {
     const accessToken = jwt.sign(
@@ -74,6 +75,19 @@ class AuthService {
     } catch (err) {
       throw new Error("Invalid or expired refresh token");
     }
+  }
+  async updatePassword(userId, data) {
+      const {password,newPassword}=data;
+      if(password === newPassword){
+        throw new BadRequestError("New password must differ from current password")
+      }
+      const user = await userRepo.findById(userId);
+      if (!user) throw new NotFoundError("User not found");
+      const isMatch = await bcrypt.compare(password, user.password);
+      if (!isMatch) throw new BadRequestError("Invalid credentials");
+      const hashedPassword = await bcrypt.hash(newPassword,authConfig.bcryptRounds);
+      await userRepo.update(userId,{password:hashedPassword,passwordChangedAt:new Date()});
+      await refreshTokenRepo.deleteByUser(userId);
   }
   async logout(token) {
     if (!token) throw new Error("token is required");
