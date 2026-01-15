@@ -14,10 +14,10 @@ class UserMapper {
   }
   getProfileDTO(userDB,imageUrl){
     return {
-      firstName:userDB?.profile?.firstName || null,
-      lastName:userDB?.profile?.lastName || null,
-      username:userDB?.username || null,
-      email:userDB?.email || null,
+      firstName:userDB?.profile?.firstName || "",
+      lastName:userDB?.profile?.lastName || "",
+      username:userDB?.username || "",
+      email:userDB?.email || "",
       imageUrl:imageUrl || ""
     }
   }
@@ -26,9 +26,9 @@ class UserMapper {
       return {
         id:element.requester?._id,
         username:element.requester?.username,
-        firstName:element.requester?.profile?.firstName || null,
-        lastName:element.requester?.profile?.lastName || null,
-        imageUrl:element.avatarUrl|| null
+        firstName:element.requester?.profile?.firstName || "",
+        lastName:element.requester?.profile?.lastName || "",
+        imageUrl:element.avatarUrl|| ""
       }
     });
     return data ;

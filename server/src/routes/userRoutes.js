@@ -8,9 +8,9 @@ const {updateMeSchema,requestFriendshipSchema} = require("../validators/userVali
 
 router.get("/profile/:id",verifyJWT,validateObjectId, UserController.getProfile);
 router.patch("/me",verifyJWT,validateRequest(updateMeSchema),UserController.updateProfile);
-router.post("/friendships",verifyJWT,validateRequest(requestFriendshipSchema),UserController.requestFriendship);
+router.post("/friendships",verifyJWT,UserController.requestFriendship);
 router.get("/me/requests",verifyJWT,UserController.getFriendshipRequests);
-router.patch("/me/acceptRequest",verifyJWT,validateRequest(requestFriendshipSchema),UserController.acceptFriendshipRequest);
-router.patch("/me/blockUser",verifyJWT,validateRequest(requestFriendshipSchema),UserController.blockUser);
-router.patch("/me/unblockUser",verifyJWT,validateRequest(requestFriendshipSchema),UserController.unblockUser)
+router.patch("/me/acceptRequest",verifyJWT,UserController.acceptFriendshipRequest);
+router.patch("/me/blockUser",verifyJWT,UserController.blockUser);
+router.patch("/me/unblockUser",verifyJWT,UserController.unblockUser)
 module.exports = router;

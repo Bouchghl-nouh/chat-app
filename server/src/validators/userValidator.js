@@ -2,7 +2,7 @@ const Joi = require("joi");
 const mongoose = require("mongoose");
 // Define schema
 const updateMeSchema = Joi.object({
-  username: Joi.string().min(2).max(30).required(),
+  username: Joi.string().min(2).max(30),
   firstName: Joi.string().min(2).max(30),
   lastName: Joi.string().min(2).max(30),
   avatar: Joi.string()

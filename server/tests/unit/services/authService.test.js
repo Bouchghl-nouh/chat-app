@@ -193,4 +193,37 @@ describe("AuthService", () => {
       expect(refreshTokenRepo.deleteByToken).toHaveBeenCalledWith("token");
     });
   });
+  describe("update Password", () => {
+    test("it should update the password", async () => {
+      const userId = 1;
+      const data = { password: "password", newPassword: "newPassword" };
+      userRepo.findById.mockResolvedValue({ password: "password" });
+      bcrypt.compare.mockResolvedValue(true);
+      bcrypt.hash.mockResolvedValue("hashedPassword");
+      await authService.updatePassword(userId, data);
+
+      expect(bcrypt.compare).toHaveBeenCalledWith("password", "password");
+      expect(bcrypt.hash).toHaveBeenCalledWith(
+        "newPassword",
+        expect.any(Number)
+      );
+      expect(userRepo.update).toHaveBeenCalledWith(userId, {
+        password: "hashedPassword",
+        passwordChangedAt: expect.any(Date),
+      });
+      expect(refreshTokenRepo.deleteByUser).toHaveBeenCalledWith(userId);
+    });
+    test("it should throw if password is different from the one on database", async () => {
+      const userId = 1;
+      const data = { password: "wrongPassword", newPassword: "newPassword" };
+      userRepo.findById.mockResolvedValue({ password: "password" });
+      bcrypt.compare.mockResolvedValue(false);
+      await expect(authService.updatePassword(userId, data)).rejects.toThrow(
+        "Invalid credentials"
+      );
+      expect(userRepo.update).not.toHaveBeenCalled();
+      expect(bcrypt.hash).not.toHaveBeenCalled();
+      expect(refreshTokenRepo.deleteByUser).not.toHaveBeenCalled();
+    });
+  });
 });

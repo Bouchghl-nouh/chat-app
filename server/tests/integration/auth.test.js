@@ -14,14 +14,26 @@ jest.mock("@src/config/auth", () => ({
   },
 }));
 jest.mock("@src/services/authService");
-
+jest.mock("@src/middleware/verifyJWT", () => {
+  return (req, res, next) => {
+    req.user = { id: 1 };
+    next();
+  };
+});
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
 app.use("/auth", authRoutes);
 
 describe("AuthController integrated Tests", () => {
-  beforeEach(() => jest.clearAllMocks());
+  beforeEach(() => {
+    jest.clearAllMocks();
+    jest.spyOn(console, "warn").mockImplementation(() => {});
+  });
+  afterEach(() => {
+    console.warn.mockRestore();
+  });
+
   describe("POST auth/register", () => {
     test("should register a user successfully", async () => {
       authService.register.mockResolvedValue({ id: "1", username: "user" });
@@ -114,6 +126,29 @@ describe("AuthController integrated Tests", () => {
       expect(res.status).toBe(500);
       expect(res.body.success).toBe(false);
       expect(res.body.message).toBe("Invalid or expired refresh token");
+    });
+  });
+  describe("Patch auth/newPassword", () => {
+    test("should update the password successfully", async () => {
+      authService.updatePassword.mockResolvedValue();
+      const res = await request(app)
+        .patch("/auth/newPassword")
+        .send({ password: "password", newPassword: "newPassword" });
+      expect(res.headers["set-cookie"][0]).toMatch(/refreshToken=/);
+      expect(res.status).toBe(200);
+      expect(res.body.success).toBe(true);
+      expect(res.body.message).toBe("password updated successfully");
+    });
+    test("should throw invalid request data", async () => {
+      authService.updatePassword.mockResolvedValue();
+      const res = await request(app)
+        .patch("/auth/newPassword")
+        .send({ password: "password" });
+
+      expect(res.status).toBe(400);
+      expect(res.body.success).toBe(false);
+      expect(res.body.message).toBe("Invalid Request data");
+      expect(console.warn).toHaveBeenCalled();
     });
   });
   describe("POST /auth/logout", () => {

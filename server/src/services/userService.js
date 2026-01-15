@@ -60,7 +60,7 @@ class UserService {
     const data = await friendshipRepo.getPendingRequests(userId);
     const dataWithImages = await Promise.all(
       data.map(async (element) => {
-        const avatarKey = element.requester.profile.avatar.url;
+        const avatarKey = element.requester?.profile?.avatar?.url;
         if (!avatarKey) {
           return {
             ...element.toJSON(),
@@ -85,7 +85,7 @@ class UserService {
       throw new NotFoundError("request doesn't exist");
     }
     return await friendshipRepo.updateStatus(
-      friendship.id,
+      friendship._id,
       "accepted",
       recipient
     );
@@ -95,7 +95,7 @@ class UserService {
     if (!friendship) {
       throw new NotFoundError("request doesn't exist");
     }
-    return await friendshipRepo.updateStatus(friendship.id, "blocked", blocker);
+    return await friendshipRepo.updateStatus(friendship._id, "blocked", blocker);
   }
   async unblockFriend(blocker, blocked) {
     const friendship = await friendshipRepo.checkFriendship(blocker, blocked);
@@ -103,7 +103,7 @@ class UserService {
       throw new UnauthorizedError("you don't have permission");
     }
     return await friendshipRepo.updateStatus(
-      friendship.id,
+      friendship._id,
       "accepted",
       blocker
     );

@@ -91,7 +91,6 @@ class AuthService {
   }
   async logout(token) {
     if (!token) throw new Error("token is required");
-
     await refreshTokenRepo.deleteByToken(token);
   }
 }

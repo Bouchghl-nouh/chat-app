@@ -4,11 +4,7 @@ class UserController {
   async getProfile(req, res) {
     const { id } = req.params;
     const userProfile = await userService.getUserProfile(id);
-    if (userProfile) {
-      sendResponse(res, 200, true, "user data", userProfile);
-    } else {
-      sendResponse(res, 404, false, "User not found");
-    }
+    sendResponse(res, 200, true, "user data", userProfile);
   }
   async updateProfile(req, res) {
     const resp = await userService.updateProfile(req.user.id, req.body);
@@ -26,14 +22,14 @@ class UserController {
   async acceptFriendshipRequest(req, res) {
     const { requester } = req.body;
     await userService.acceptFriendshipRequest(req.user.id, requester);
-    sendResponse(res, 200, true, "You are friends now ");
+    sendResponse(res, 200, true, "You are friends now");
   }
   async blockUser(req, res) {
     const { requester } = req.body;
     await userService.blockFriend(req.user.id, requester);
     sendResponse(res, 200, true, "You blocked this friend");
   }
-   async unblockUser(req, res) {
+  async unblockUser(req, res) {
     const { requester } = req.body;
     await userService.unblockFriend(req.user.id, requester);
     sendResponse(res, 200, true, "You are friends again");
