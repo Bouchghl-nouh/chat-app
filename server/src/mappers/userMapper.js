@@ -1,5 +1,5 @@
-const flattenObj = require('../utils/flattenObj');
-
+const flattenObj = require("../utils/flattenObj");
+const { getPresignedUrl } = require("../utils/fileService");
 class UserMapper {
   toPersistenceUpdate(dto) {
     const obj = {};
@@ -12,26 +12,52 @@ class UserMapper {
     }
     return flattenObj("", obj);
   }
-  getProfileDTO(userDB,imageUrl){
+  getProfileDTO(userDB, avatar) {
     return {
-      firstName:userDB?.profile?.firstName || "",
-      lastName:userDB?.profile?.lastName || "",
-      username:userDB?.username || "",
-      email:userDB?.email || "",
-      imageUrl:imageUrl || ""
-    }
+      firstName: userDB?.profile?.firstName || "",
+      lastName: userDB?.profile?.lastName || "",
+      username: userDB?.username || "",
+      avatar: avatar || "",
+    };
   }
-  getRequests(requestsDB){
-    const data = requestsDB.map(element =>{
+  getMyProfileDTO(userDB, imageUrl) {
+    return {
+      firstName: userDB?.profile?.firstName || "",
+      lastName: userDB?.profile?.lastName || "",
+      username: userDB?.username || "",
+      email: userDB?.email || "",
+      avatar: imageUrl || "",
+    };
+  }
+  getRequests(requestsDB) {
+    const data = requestsDB.map((element) => {
       return {
-        id:element.requester?._id,
-        username:element.requester?.username,
-        firstName:element.requester?.profile?.firstName || "",
-        lastName:element.requester?.profile?.lastName || "",
-        imageUrl:element.avatarUrl|| ""
-      }
+        id: element.requester?._id,
+        username: element.requester?.username,
+        firstName: element.requester?.profile?.firstName || "",
+        lastName: element.requester?.profile?.lastName || "",
+        avatar: element.avatarUrl || "",
+      };
     });
-    return data ;
+    return data;
+  }
+  async getDataWithImages(DBdata) {
+    return await Promise.all(
+      DBdata.map(async (element) => {
+        const avatarKey = element.requester?.profile?.avatar?.url;
+        if (!avatarKey) {
+          return {
+            ...element.toJSON(),
+            avatarUrl: "",
+          };
+        }
+        const resp = await getPresignedUrl(avatarKey);
+        return {
+          ...element.toJSON(),
+          avatarUrl: resp.data.downloadUrl ?? "",
+        };
+      })
+    );
   }
 }
 

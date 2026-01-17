@@ -12,16 +12,27 @@ class UserService {
   async getUserProfile(userId) {
     const userData = await userRepo.findById(userId);
     if (!userData) throw new NotFoundError("User not found");
-    let imageUrl = "";
+    let avatar = "";
     if (userData?.profile?.avatar?.url) {
       const resp = await getPresignedUrl(userData.profile.avatar.url);
-      imageUrl = resp?.data?.downloadUrl ?? "";
+      avatar = resp?.data?.downloadUrl ?? "";
     }
-    const userProfile = UserMapper.getProfileDTO(userData, imageUrl);
+    const userProfile = UserMapper.getProfileDTO(userData, avatar);
+    return userProfile;
+  }
+    async getMyProfile(userId) {
+    const userData = await userRepo.findById(userId);
+    if (!userData) throw new NotFoundError("User not found");
+    let avatar = "";
+    if (userData?.profile?.avatar?.url) {
+      const resp = await getPresignedUrl(userData.profile.avatar.url);
+      avatar = resp?.data?.downloadUrl ?? "";
+    }
+    const userProfile = UserMapper.getProfileDTO(userData, avatar);
     return userProfile;
   }
   async updateProfile(userId, data) {
-    let uploadedUrl = "";
+    let uploadUrl = "";
     const normalizedData = { ...data };
     if (data.avatar) {
       const response = await upload(data.avatar);
@@ -31,55 +42,40 @@ class UserService {
           bucket: "userId",
           updatedAt: new Date(),
         };
-        uploadedUrl = response.data?.uploadUrl;
+        uploadUrl = response.data?.uploadUrl;
       }
     }
     const update = UserMapper.toPersistenceUpdate(normalizedData);
     await userRepo.update(userId, update);
-    return { uploadedUrl };
+    return { uploadUrl };
   }
-  async requestFriendship(userId, user) {
-    if (userId === user) {
+  async requestFriendship(userId, recipientId) {
+    if (userId === recipientId) {
       throw new BadRequestError("you can't be friend with yourself");
     }
-    const recipient = await userRepo.findById(user);
+    const recipient = await userRepo.findById(recipientId);
     if (!recipient || recipient?.deletedAt) {
       throw new NotFoundError("user doesn't exist");
     }
-    const friendship = await friendshipRepo.checkFriendship(userId, user);
+    const friendship = await friendshipRepo.checkFriendship(userId, recipientId);
     if (friendship) {
       throw new ConflictError("you are already send the request");
     }
     const data = {
       requester: userId,
-      recipient: user,
+      recipient: recipientId,
     };
     await friendshipRepo.create(data);
   }
   async getPendingRequests(userId) {
     const data = await friendshipRepo.getPendingRequests(userId);
-    const dataWithImages = await Promise.all(
-      data.map(async (element) => {
-        const avatarKey = element.requester?.profile?.avatar?.url;
-        if (!avatarKey) {
-          return {
-            ...element.toJSON(),
-            avatarUrl: "",
-          };
-        }
-        const resp = await getPresignedUrl(avatarKey);
-        return {
-          ...element.toJSON(),
-          avatarUrl: resp.data.downloadUrl ?? "",
-        };
-      })
-    );
+    const dataWithImages = await UserMapper.getDataWithImages(data);
     return UserMapper.getRequests(dataWithImages);
   }
-  async acceptFriendshipRequest(recipient, requester) {
+  async acceptFriendshipRequest(recipientId, requesterId) {
     const friendship = await friendshipRepo.getPendingRequest(
-      recipient,
-      requester
+      recipientId,
+      requesterId
     );
     if (!friendship) {
       throw new NotFoundError("request doesn't exist");
@@ -87,25 +83,25 @@ class UserService {
     return await friendshipRepo.updateStatus(
       friendship._id,
       "accepted",
-      recipient
+      recipientId
     );
   }
-  async blockFriend(blocker, friend) {
-    const friendship = await friendshipRepo.checkFriendship(blocker, friend);
+  async blockFriend(blockerId, friendId) {
+    const friendship = await friendshipRepo.checkFriendship(blockerId, friendId);
     if (!friendship) {
       throw new NotFoundError("request doesn't exist");
     }
-    return await friendshipRepo.updateStatus(friendship._id, "blocked", blocker);
+    return await friendshipRepo.updateStatus(friendship._id, "blocked", blockerId);
   }
-  async unblockFriend(blocker, blocked) {
-    const friendship = await friendshipRepo.checkFriendship(blocker, blocked);
+  async unblockFriend(blockerId, blockedId) {
+    const friendship = await friendshipRepo.checkFriendship(blockerId, blockedId);
     if (!friendship) {
       throw new UnauthorizedError("you don't have permission");
     }
     return await friendshipRepo.updateStatus(
       friendship._id,
       "accepted",
-      blocker
+      blockerId
     );
   }
 }

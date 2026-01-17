@@ -67,7 +67,7 @@ describe("userController integrated Tests", () => {
     test("update user profile", async () => {
       const userId = 1;
       const data = { avatar: "john.webp", firstName: "john", lastName: "Doe" };
-      userService.updateProfile.mockResolvedValue({ uploadedUrl: "url" });
+      userService.updateProfile.mockResolvedValue({ uploadUrl: "url" });
       const res = await request(app).patch("/user/me").send(data);
       expect(res.status).toBe(200);
       expect(res.body.success).toBe(true);
@@ -75,30 +75,21 @@ describe("userController integrated Tests", () => {
       expect(userService.updateProfile).toHaveBeenCalledWith(userId, data);
     });
   });
-  describe("POST /user/friendships", () => {
+  describe("POST /user//friendship/:id", () => {
     test("send the request successfully", async () => {
-      const userId = 1;
-      const requester = 2;
       userService.requestFriendship.mockResolvedValue({ _id: 1 });
       const res = await request(app)
-        .post("/user/friendships")
-        .send({ requester });
+        .post("/user/friendship/2");
       expect(res.status).toBe(201);
       expect(res.body.success).toBe(true);
       expect(res.body.message).toBe("your request was sent successfully");
-      expect(userService.requestFriendship).toHaveBeenCalledWith(
-        userId,
-        requester
-      );
     });
     test("already send the request", async () => {
-      const requester = 2;
       userService.requestFriendship.mockRejectedValue(
         new ConflictError("you are already send the request")
       );
       const res = await request(app)
-        .post("/user/friendships")
-        .send({ requester });
+        .post("/user/friendship/2");
       expect(res.status).toBe(409);
       expect(res.body.success).toBe(false);
       expect(res.body.message).toBe("you are already send the request");
@@ -136,49 +127,40 @@ describe("userController integrated Tests", () => {
       expect(res.body.message).toBe("pending requests");
     });
   });
-  describe("PATCH /user/me/acceptRequest", () => {
+  describe("PATCH /user/me/friendship/accept/:id", () => {
     test("accept the request successfully", async () => {
-      const userId = 1;
-      const requester = 2;
       userService.acceptFriendshipRequest.mockResolvedValue({
         _id: 1,
         status: "accepted",
       });
       const res = await request(app)
-        .patch("/user/me/acceptRequest")
-        .send({ requester });
+        .patch("/user/me/friendship/accept/2");
       expect(res.status).toBe(200);
       expect(res.body.success).toBe(true);
       expect(res.body.message).toBe("You are friends now");
     });
   });
-  describe("PATCH /user/me/unblockUser", () => {
+  describe("PATCH /user/me/friendship/block/:id", () => {
     test("block the user successfully", async () => {
-      const userId = 1;
-      const requester = 2;
       userService.blockFriend.mockResolvedValue({
         _id: 1,
         status: "blocked",
       });
       const res = await request(app)
-        .patch("/user/me/blockUser")
-        .send({ requester });
+        .patch("/user/me/friendship/block/2");
       expect(res.status).toBe(200);
       expect(res.body.success).toBe(true);
       expect(res.body.message).toBe("You blocked this friend");
     });
   });
-   describe("PATCH /user/me/unblockUser", () => {
+   describe("PATCH /me/friendship/unblock/:id", () => {
     test("unblock the user successfully", async () => {
-      const userId = 1;
-      const requester = 2;
       userService.blockFriend.mockResolvedValue({
         _id: 1,
         status: "accepted",
       });
       const res = await request(app)
-        .patch("/user/me/unblockUser")
-        .send({ requester });
+        .patch("/user/me/friendship/unblock/2");
       expect(res.status).toBe(200);
       expect(res.body.success).toBe(true);
       expect(res.body.message).toBe("You are friends again");

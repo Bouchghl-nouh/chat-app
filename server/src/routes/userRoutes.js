@@ -4,13 +4,14 @@ const router = express.Router();
 const validateRequest = require("../middleware/validateRequest");
 const validateObjectId = require("../middleware/validateObjectId");
 const verifyJWT = require("../middleware/verifyJWT");
-const {updateMeSchema,requestFriendshipSchema} = require("../validators/userValidator")
+const {updateMeSchema} = require("../validators/userValidator")
 
 router.get("/profile/:id",verifyJWT,validateObjectId, UserController.getProfile);
+router.post("/friendship/:id",verifyJWT,validateObjectId,UserController.requestFriendship);
+router.get("/me",verifyJWT, UserController.getMyProfile);
 router.patch("/me",verifyJWT,validateRequest(updateMeSchema),UserController.updateProfile);
-router.post("/friendships",verifyJWT,UserController.requestFriendship);
 router.get("/me/requests",verifyJWT,UserController.getFriendshipRequests);
-router.patch("/me/acceptRequest",verifyJWT,UserController.acceptFriendshipRequest);
-router.patch("/me/blockUser",verifyJWT,UserController.blockUser);
-router.patch("/me/unblockUser",verifyJWT,UserController.unblockUser)
+router.patch("/me/friendship/accept/:id",verifyJWT,validateObjectId,UserController.acceptFriendshipRequest);
+router.patch("/me/friendship/block/:id",verifyJWT,validateObjectId,UserController.blockUser);
+router.patch("/me/friendship/unblock/:id",verifyJWT,validateObjectId,UserController.unblockUser);
 module.exports = router;

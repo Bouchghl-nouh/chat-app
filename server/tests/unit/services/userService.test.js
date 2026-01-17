@@ -53,8 +53,7 @@ describe("UserService", () => {
         firstName: "John",
         lastName: "Doe",
         username: "JohnDoe",
-        email: "john@gmail.com",
-        imageUrl: "",
+        avatar: "",
       });
     });
     test("get the user profile successfully with image url", async () => {
@@ -81,8 +80,7 @@ describe("UserService", () => {
         firstName: "John",
         lastName: "Doe",
         username: "JohnDoe",
-        email: "john@gmail.com",
-        imageUrl: expect.any(String),
+        avatar: expect.any(String),
       });
     });
   });
@@ -95,7 +93,7 @@ describe("UserService", () => {
       };
       const result = await userService.updateProfile(id, data);
       expect(result).toEqual({
-        uploadedUrl: "",
+        uploadUrl: "",
       });
       expect(userRepo.update).toHaveBeenCalledWith(id, {
         "profile.firstName": "john",
@@ -123,7 +121,7 @@ describe("UserService", () => {
         "profile.avatar.updatedAt": expect.any(Date),
       };
       expect(result).toEqual({
-        uploadedUrl: "https://download-url.com/hashedJohn.webp",
+        uploadUrl: "https://download-url.com/hashedJohn.webp",
       });
       expect(userRepo.update).toHaveBeenCalledWith(id, normalizedData);
       expect(upload).toHaveBeenCalledWith("john.webp");
@@ -226,9 +224,6 @@ describe("UserService", () => {
         }),
       ];
       friendshipRepo.getPendingRequests.mockResolvedValue(pendingRequests);
-      getPresignedUrl.mockResolvedValue({
-        data: { downloadUrl: "https://signed-url.com/avatar.png" },
-      });
       const result = await userService.getPendingRequests(userId);
       expect(result).toEqual([
         {
@@ -236,21 +231,21 @@ describe("UserService", () => {
           username: "user1",
           firstName: "user",
           lastName: "1",
-          imageUrl: expect.any(String),
+          avatar: expect.any(String),
         },
         {
           id: 2,
           username: "user2",
           firstName: "user",
           lastName: "2",
-          imageUrl: expect.any(String),
+          avatar: expect.any(String),
         },
         {
           id: 3,
           username: "user3",
           firstName: "user",
           lastName: "3",
-          imageUrl: "",
+          avatar: "",
         },
       ]);
       expect(getPresignedUrl).toHaveBeenCalledTimes(2);

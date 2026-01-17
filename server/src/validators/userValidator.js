@@ -13,18 +13,6 @@ const updateMeSchema = Joi.object({
   abortEarly: true,
   allowUnknown: false,
 });
-const requestFriendshipSchema = Joi.object({
-  requester: Joi.string().trim().custom((value,helpers)=>{
-    if (!mongoose.Types.ObjectId.isValid(value)) {
-      return helpers.message('"requester" must be a valid ObjectId');
-    }
-    return value ;
-  }).required()
-}).options({
-  abortEarly: true,
-  allowUnknown: false,
-});
 module.exports = {
-  updateMeSchema,
-  requestFriendshipSchema
+  updateMeSchema
 };
