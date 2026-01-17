@@ -63,6 +63,16 @@ describe("userController integrated Tests", () => {
       expect(userService.getUserProfile).toHaveBeenCalled();
     });
   });
+    describe("GET /user/profile/:id", () => {
+    test("get my profile successfully", async () => {
+      userService.getMyProfile.mockResolvedValue({ id: 1, username: "John" });
+      const res = await request(app).get("/user/me");
+      expect(res.status).toBe(200);
+      expect(res.body.success).toBe(true);
+      expect(res.body.message).toBe("your personal data");
+      expect(userService.getMyProfile).toHaveBeenCalled();
+    });
+  });
   describe("PATCH /user/me", () => {
     test("update user profile", async () => {
       const userId = 1;

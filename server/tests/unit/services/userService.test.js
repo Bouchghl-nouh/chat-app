@@ -84,6 +84,56 @@ describe("UserService", () => {
       });
     });
   });
+    describe("getMyProfile", () => {
+    test("get the user profile successfully without image url", async () => {
+      const id = 1;
+      const data = {
+        _id: 1,
+        username: "JohnDoe",
+        email: "john@gmail.com",
+        profile: {
+          firstName: "John",
+          lastName: "Doe",
+        },
+      };
+      userRepo.findById.mockResolvedValue(data);
+      const result = await userService.getUserProfile(id);
+      expect(result).toEqual({
+        firstName: "John",
+        lastName: "Doe",
+        username: "JohnDoe",
+        avatar: "",
+      });
+    });
+    test("get the user profile successfully with image url", async () => {
+      const id = 1;
+      const data = {
+        _id: 1,
+        username: "JohnDoe",
+        email: "john@gmail.com",
+        profile: {
+          firstName: "John",
+          lastName: "Doe",
+          avatar: {
+            url: "url",
+            bucket: "bucket",
+          },
+        },
+      };
+      userRepo.findById.mockResolvedValue(data);
+      getPresignedUrl.mockResolvedValue({
+        data: { downloadUrl: "https://signed-url.com/avatar.png" },
+      });
+      const result = await userService.getMyProfile(id);
+      expect(result).toEqual({
+        firstName: "John",
+        lastName: "Doe",
+        username: "JohnDoe",
+        email:"john@gmail.com",
+        avatar: expect.any(String),
+      });
+    });
+  });
   describe("update Profile", () => {
     test("it should update the profile successfully without image", async () => {
       const id = 1;

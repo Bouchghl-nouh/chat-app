@@ -20,7 +20,7 @@ class UserService {
     const userProfile = UserMapper.getProfileDTO(userData, avatar);
     return userProfile;
   }
-    async getMyProfile(userId) {
+  async getMyProfile(userId) {
     const userData = await userRepo.findById(userId);
     if (!userData) throw new NotFoundError("User not found");
     let avatar = "";
@@ -28,7 +28,7 @@ class UserService {
       const resp = await getPresignedUrl(userData.profile.avatar.url);
       avatar = resp?.data?.downloadUrl ?? "";
     }
-    const userProfile = UserMapper.getProfileDTO(userData, avatar);
+    const userProfile = UserMapper.getMyProfileDTO(userData, avatar);
     return userProfile;
   }
   async updateProfile(userId, data) {
@@ -57,7 +57,10 @@ class UserService {
     if (!recipient || recipient?.deletedAt) {
       throw new NotFoundError("user doesn't exist");
     }
-    const friendship = await friendshipRepo.checkFriendship(userId, recipientId);
+    const friendship = await friendshipRepo.checkFriendship(
+      userId,
+      recipientId
+    );
     if (friendship) {
       throw new ConflictError("you are already send the request");
     }
@@ -87,14 +90,24 @@ class UserService {
     );
   }
   async blockFriend(blockerId, friendId) {
-    const friendship = await friendshipRepo.checkFriendship(blockerId, friendId);
+    const friendship = await friendshipRepo.checkFriendship(
+      blockerId,
+      friendId
+    );
     if (!friendship) {
       throw new NotFoundError("request doesn't exist");
     }
-    return await friendshipRepo.updateStatus(friendship._id, "blocked", blockerId);
+    return await friendshipRepo.updateStatus(
+      friendship._id,
+      "blocked",
+      blockerId
+    );
   }
   async unblockFriend(blockerId, blockedId) {
-    const friendship = await friendshipRepo.checkFriendship(blockerId, blockedId);
+    const friendship = await friendshipRepo.checkFriendship(
+      blockerId,
+      blockedId
+    );
     if (!friendship) {
       throw new UnauthorizedError("you don't have permission");
     }
