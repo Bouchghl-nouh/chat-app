@@ -86,8 +86,9 @@ const post = <T>(url: string, data?: unknown, config?: AxiosRequestConfig, showT
 
 const put = <T>(url: string, data?: unknown, config?: AxiosRequestConfig, showToast?: boolean) =>
   request(() => api.put<ApiResponse<T>>(url, data, config), showToast);
-
+const patch = <T>(url: string, data?: unknown, config?: AxiosRequestConfig, showToast?: boolean) =>
+  request(() => api.patch<ApiResponse<T>>(url, data, config), showToast);
 const del = <T>(url: string, data?: unknown, config?: AxiosRequestConfig, showToast?: boolean) =>
   request(() => api.delete<ApiResponse<T>>(url, { ...(config ?? {}), data }), showToast);
 
-export const http = { get, post, put, del };
+export const http = { get, post, put, del,patch };
