@@ -1,9 +1,19 @@
+import { useState, useEffect } from "react";
+import {
+  Camera,
+  Loader2,
+  User,
+  Mail,
+  FileText,
+  X,
+  Check,
+  Lock,
+} from "lucide-react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import unknown from "../../../assets/unkown.webp";
 import { profileSchema } from "../validation/updateProfile.schema";
 import type { ProfileFormSchema } from "../validation/updateProfile.schema";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useState, useEffect } from "react";
 import {
   Field,
   FieldError,
@@ -11,17 +21,22 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
-import { IconImage } from "@/assets/brand-icons/icon-picture";
 import { useMyProfile } from "../hooks/useMyProfile";
 import { useUpdateProfile } from "../hooks/useUpdateProfile";
 import ProfileFormSkeleton from "./profileFormSkelton";
+import { cn } from "@/lib/utils";
+const inputClasses = (error?: any) =>
+  cn(
+    "w-full px-4 py-2.5 border rounded-lg transition-all text-sm",
+    error && "border-red-500 focus:border-red-500 focus:ring-red-100",
+  );
 const ProfileForm = () => {
   const [preview, setPreview] = useState<string>(unknown);
   const [file, setFile] = useState<File | null>(null);
-  const [edit, setEdit] = useState<boolean>(false);
+  const [isEditing, setIsEditing] = useState<boolean>(false);
+
   const {
     register,
     handleSubmit,
@@ -30,7 +45,10 @@ const ProfileForm = () => {
   } = useForm<ProfileFormSchema>({
     resolver: zodResolver(profileSchema),
   });
+
   const { data, isLoading, isError, error } = useMyProfile();
+  const updateProfile = useUpdateProfile();
+
   useEffect(() => {
     if (data) {
       reset({
@@ -44,18 +62,12 @@ const ProfileForm = () => {
       setPreview(data.avatar);
     }
   }, [data, reset]);
-  const updateProfile = useUpdateProfile();
-  const onSubmit = (data: ProfileFormSchema) => {
-    const sendData = {
-      username: data.username,
-      firstName: data.firstName,
-      lastName: data.lastName,
-      avatar: file ? file.name : undefined,
-      description: data.description,
-    };
-    updateProfile.mutate({ data: sendData, file });
-    setEdit(false);
+
+  const onSubmit = (formData: ProfileFormSchema) => {
+    updateProfile.mutate({data:{...formData,avatar:file?.name},file});
+    setIsEditing(false);
   };
+
   const handleCancel = () => {
     if (data) {
       reset({
@@ -69,141 +81,231 @@ const ProfileForm = () => {
       }
       setFile(null);
     }
-    setEdit(false);
+    setIsEditing(false);
   };
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setFile(file);
-      setPreview(URL.createObjectURL(file));
+    const selectedFile = e.target.files?.[0];
+    if (selectedFile) {
+      setFile(selectedFile);
+      setPreview(URL.createObjectURL(selectedFile));
     }
   };
+
+  const handleChangePassword = () => {
+    // TODO: Implement password change logic
+    console.log("Change password clicked");
+  };
+
   useEffect(() => {
     return () => {
-      if (preview.startsWith("blob:")) {
+      if (preview?.startsWith("blob:")) {
         URL.revokeObjectURL(preview);
       }
     };
   }, [preview]);
+
   if (isLoading) return <ProfileFormSkeleton />;
   if (isError) return <div>Error: {error?.message}</div>;
-  return (
-    <form className="space-y-4 p-10" onSubmit={handleSubmit(onSubmit)}>
-      <div className="flex justify-center">
-        <div className="relative group w-44 h-44">
-          <img
-            src={preview}
-            alt="Profile"
-            className="w-full h-full object-cover rounded-full border-2 border-gray-200"
-          />
-          {edit && (
-            <label
-              htmlFor="avatar"
-              className="absolute inset-0 flex flex-col items-center justify-center bg-black/40 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
-            >
-              <IconImage />
-              <span className="text-sm font-medium mt-1">Edit</span>
-            </label>
-          )}
 
-          <input
-            id="avatar"
-            type="file"
-            className="hidden"
-            accept="image/*"
-            disabled={!edit}
-            onChange={handleFileChange}
-          />
+  return (
+    <form
+      className="bg-white rounded-xl shadow-md border border-slate-200 p-4 mt-4"
+      onSubmit={handleSubmit(onSubmit)}
+    >
+      {/* Header Section */}
+      <div className="flex flex-col sm:flex-row items-center sm:items-center justify-between gap-4 mb-8 pb-6 border-b border-slate-200">
+        {/* Profile Picture */}
+        <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6 w-full sm:w-auto">
+          <div className="relative group">
+            <div className="relative w-20 h-20 sm:w-32 sm:h-32">
+              <div className="absolute inset-0 rounded-full bg-gradient-to-br from-slate-300 to-slate-400 p-0.5">
+                <div className="w-full h-full rounded-full bg-white p-0.5 shadow-lg">
+                  <div className="w-full h-full rounded-full overflow-hidden bg-slate-100">
+                    <img
+                      src={preview}
+                      alt="Profile"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {isEditing && (
+                <label
+                  htmlFor="avatar"
+                  className="absolute inset-0 flex items-center justify-center bg-slate-900/75 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 cursor-pointer backdrop-blur-sm m-1"
+                >
+                  <Camera className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+                </label>
+              )}
+
+              <input
+                id="avatar"
+                type="file"
+                className="hidden"
+                accept="image/*"
+                disabled={!isEditing}
+                onChange={handleFileChange}
+              />
+            </div>
+          </div>
+
+          <div className="hidden sm:block">
+            <h1 className="text-2xl font-bold text-slate-900">
+              Profile Settings
+            </h1>
+            <p className="text-sm text-slate-600 mt-1">
+              Manage your account information
+            </p>
+          </div>
+        </div>
+
+        {/* Action Buttons */}
+        <div className="flex gap-2 w-full sm:w-auto">
+          {!isEditing && (
+            <>
+              <Button
+                type="button"
+                onClick={handleChangePassword}
+                className="hidden lg:flex px-4 py-2 items-center gap-2"
+              >
+                <Lock className="w-4 h-4" />
+                <span>Change Password</span>
+              </Button>
+              <Button
+                type="button"
+                onClick={() => setIsEditing(true)}
+                className="w-full sm:w-auto px-4 py-2 flex items-center justify-center gap-2"
+              >
+                <User className="w-4 h-4" />
+                <span>Edit Profile</span>
+              </Button>
+            </>
+          )}
         </div>
       </div>
-      <FieldGroup className="grid grid-cols-8 gap-4">
-        <Field className="col-span-4">
-          <FieldLabel htmlFor="email">Email address</FieldLabel>
+
+      <FieldGroup className="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-6">
+        <Field className="lg:col-span-2">
+          <FieldLabel className="text-sm font-semibold text-slate-700 mb-2 flex items-center gap-2">
+            <Mail className="w-4 h-4 text-slate-500" />
+            Email Address
+          </FieldLabel>
           <Input
-            id="email"
-            placeholder={`${data?.email ?? "example@gmail.com"}`}
+            type="email"
+            value={data?.email ?? "example@gmail.com"}
             disabled
+            className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-600 cursor-not-allowed text-sm"
           />
         </Field>
-        <Field className="col-span-4">
-          <FieldLabel htmlFor="username">Username</FieldLabel>
+
+        <Field>
+          <FieldLabel className="text-sm font-semibold text-slate-700 mb-2 flex items-center gap-2">
+            <User className="w-4 h-4" />
+            Username
+          </FieldLabel>
           <Input
-            id="username"
-            placeholder="Enter Your username"
-            className={errors.username ? "border-red-500" : ""}
-            disabled={!edit}
+            type="text"
+            placeholder="Enter your username"
+            disabled={!isEditing}
+            className={inputClasses(errors.username)}
             {...register("username")}
           />
           {errors.username && (
-            <FieldError>{errors.username.message}</FieldError>
+            <FieldError className="text-xs text-red-600 mt-1">
+              {errors.username.message}
+            </FieldError>
           )}
         </Field>
-        <Field className="col-span-4">
-          <FieldLabel htmlFor="firstName">FirstName</FieldLabel>
+
+        <Field>
+          <FieldLabel className="text-sm font-semibold text-slate-700 mb-2 flex items-center gap-2">
+            <User className="w-4 h-4" />
+            First Name
+          </FieldLabel>
           <Input
-            id="firstName"
-            placeholder="Enter your FirstName"
-            className={errors.firstName ? "border-red-500" : ""}
-            disabled={!edit}
+            type="text"
+            placeholder="Enter your first name"
+            disabled={!isEditing}
+            className={inputClasses(errors.firstName)}
             {...register("firstName")}
           />
           {errors.firstName && (
-            <FieldError>{errors.firstName.message}</FieldError>
+            <FieldError className="text-xs text-red-600 mt-1">
+              {errors.firstName.message}
+            </FieldError>
           )}
         </Field>
-        <Field className="col-span-4">
-          <FieldLabel htmlFor="lastName">LastName</FieldLabel>
+
+        <Field>
+          <FieldLabel className="text-sm font-semibold text-slate-700 mb-2 flex items-center gap-2">
+            <User className="w-4 h-4" />
+            Last Name
+          </FieldLabel>
           <Input
-            id="lastName"
-            placeholder="Enter your LastName"
-            className={errors.lastName ? "border-red-500" : ""}
-            disabled={!edit}
+            type="text"
+            placeholder="Enter your last name"
+            disabled={!isEditing}
+            className={inputClasses(errors.lastName)}
             {...register("lastName")}
           />
           {errors.lastName && (
-            <FieldError>{errors.lastName.message}</FieldError>
+            <FieldError className="text-xs text-red-600 mt-1">
+              {errors.lastName.message}
+            </FieldError>
           )}
         </Field>
-        <Field className="col-span-8 ">
-          <FieldLabel htmlFor="description">Description</FieldLabel>
+
+        <Field className="lg:col-span-2">
+          <FieldLabel className="text-sm font-semibold text-slate-700 mb-2 flex items-center gap-2">
+            <FileText className="w-4 h-4 text-violet-600" />
+            Bio
+          </FieldLabel>
           <Textarea
-            placeholder="description"
-            className={`min-h-25 max-h-30 ${errors.description ? "border-red-500" : ""}`}
-            disabled={!edit}
+            placeholder="Tell us about yourself..."
+            disabled={!isEditing}
+            rows={10}
+            className={inputClasses(errors.description)}
             {...register("description")}
           />
           {errors.description && (
-            <FieldError>{errors.description.message}</FieldError>
+            <FieldError className="text-xs text-red-600 mt-1">
+              {errors.description.message}
+            </FieldError>
           )}
         </Field>
       </FieldGroup>
-      <div className="flex justify-end gap-4">
-        {edit ? (
-          <>
-            <Button type="button" onClick={handleCancel}>
-              Annuler
-            </Button>
-            <Button type="submit" disabled={updateProfile.isPending}>
-              {updateProfile.isPending ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Saving...
-                </>
-              ) : (
-                "Save"
-              )}
-            </Button>
-          </>
-        ) : (
+
+      {isEditing && (
+        <div className="flex gap-3 pt-2">
           <Button
             type="button"
-            disabled={isLoading}
-            onClick={() => setEdit((prev) => !prev)}
+            onClick={handleCancel}
+            className="flex-1 px-6 py-2.5 flex items-center justify-center gap-2 text-sm"
           >
-            Edit
+            <X className="w-4 h-4" />
+            Cancel
           </Button>
-        )}
-      </div>
+          <Button
+            type="submit"
+            disabled={updateProfile.isPending}
+            className="flex-1 px-6 py-2.5 flex items-center justify-center gap-2 text-sm"
+          >
+            {updateProfile.isPending ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin" />
+                Saving...
+              </>
+            ) : (
+              <>
+                <Check className="w-4 h-4" />
+                Save Changes
+              </>
+            )}
+          </Button>
+        </div>
+      )}
     </form>
   );
 };

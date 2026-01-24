@@ -9,5 +9,5 @@ export interface myProfileData {
 }
 
 export const getMyProfile = async (): Promise<myProfileData> => {
-  return http.get("/user/me");
+  return http.get("/user/me",undefined,undefined,false);
 };
