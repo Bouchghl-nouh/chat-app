@@ -29,6 +29,10 @@ const ProfileFormSkeleton = () => {
           <Skeleton className="h-4 w-24" />
           <Skeleton className="h-10 w-full rounded-md" />
         </div>
+        <div className="col-span-8 space-y-2">
+            <Skeleton className="h-4 w-24" />
+            <Skeleton className="h-30 w-full rounded-md"/>
+        </div>
       </div>
 
       {/* Button */}

@@ -1,10 +1,11 @@
 import { http } from "@/api/base";
 export interface myProfileData {
-  firstName: string;
+  firstName?: string;
   username: string;
-  lastName: string;
-  avatar:string;
+  lastName?: string;
+  avatar?:string;
   email:string;
+  description?:string;
 }
 
 export const getMyProfile = async (): Promise<myProfileData> => {

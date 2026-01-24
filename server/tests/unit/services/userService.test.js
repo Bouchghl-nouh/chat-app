@@ -45,6 +45,7 @@ describe("UserService", () => {
         profile: {
           firstName: "John",
           lastName: "Doe",
+          description:"description"
         },
       };
       userRepo.findById.mockResolvedValue(data);
@@ -54,6 +55,7 @@ describe("UserService", () => {
         lastName: "Doe",
         username: "JohnDoe",
         avatar: "",
+        description:"description"
       });
     });
     test("get the user profile successfully with image url", async () => {
@@ -81,6 +83,7 @@ describe("UserService", () => {
         lastName: "Doe",
         username: "JohnDoe",
         avatar: expect.any(String),
+        description:""
       });
     });
   });
@@ -103,6 +106,7 @@ describe("UserService", () => {
         lastName: "Doe",
         username: "JohnDoe",
         avatar: "",
+        description:"",
       });
     });
     test("get the user profile successfully with image url", async () => {
@@ -118,6 +122,7 @@ describe("UserService", () => {
             url: "url",
             bucket: "bucket",
           },
+          description:"desc"
         },
       };
       userRepo.findById.mockResolvedValue(data);
@@ -131,6 +136,7 @@ describe("UserService", () => {
         username: "JohnDoe",
         email:"john@gmail.com",
         avatar: expect.any(String),
+        description:"desc"
       });
     });
   });

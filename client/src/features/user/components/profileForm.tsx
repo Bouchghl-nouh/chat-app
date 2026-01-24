@@ -37,6 +37,7 @@ const ProfileForm = () => {
         username: data.username || "",
         firstName: data.firstName || "",
         lastName: data.lastName || "",
+        description: data.description || "",
       });
     }
     if (data?.avatar) {
@@ -49,9 +50,10 @@ const ProfileForm = () => {
       username: data.username,
       firstName: data.firstName,
       lastName: data.lastName,
-      avatar:file ? file.name : undefined,
-    }
-    updateProfile.mutate({data:sendData,file});
+      avatar: file ? file.name : undefined,
+      description: data.description,
+    };
+    updateProfile.mutate({ data: sendData, file });
     setEdit(false);
   };
   const handleCancel = () => {
@@ -60,8 +62,11 @@ const ProfileForm = () => {
         username: data.username || "",
         firstName: data.firstName || "",
         lastName: data.lastName || "",
+        description: data.description || "",
       });
-      setPreview(data.avatar);
+      if (data.avatar) {
+        setPreview(data.avatar);
+      }
       setFile(null);
     }
     setEdit(false);
@@ -73,13 +78,13 @@ const ProfileForm = () => {
       setPreview(URL.createObjectURL(file));
     }
   };
-  useEffect(()=>{
-    return()=>{
-      if(preview.startsWith("blob:")){
+  useEffect(() => {
+    return () => {
+      if (preview.startsWith("blob:")) {
         URL.revokeObjectURL(preview);
       }
-    }
-  },[preview]);
+    };
+  }, [preview]);
   if (isLoading) return <ProfileFormSkeleton />;
   if (isError) return <div>Error: {error?.message}</div>;
   return (
@@ -159,7 +164,7 @@ const ProfileForm = () => {
             <FieldError>{errors.lastName.message}</FieldError>
           )}
         </Field>
-         {/* <Field className="col-span-8 ">
+        <Field className="col-span-8 ">
           <FieldLabel htmlFor="description">Description</FieldLabel>
           <Textarea
             placeholder="description"
@@ -170,7 +175,7 @@ const ProfileForm = () => {
           {errors.description && (
             <FieldError>{errors.description.message}</FieldError>
           )}
-        </Field>  */}
+        </Field>
       </FieldGroup>
       <div className="flex justify-end gap-4">
         {edit ? (

@@ -4,12 +4,13 @@ class UserMapper {
   toPersistenceUpdate(dto) {
     const obj = {};
     if (dto.username) obj.username = dto.username;
-    if (dto.firstName || dto.lastName || dto.avatar) {
+    if (dto.firstName || dto.lastName || dto.avatar || dto.description) {
       obj.profile = {};
       if (dto.firstName) obj.profile.firstName = dto.firstName;
       if (dto.lastName) obj.profile.lastName = dto.lastName;
       if (dto.avatar) obj.profile.avatar = dto.avatar;
-    }
+      if(dto.description) obj.profile.description = dto.description;
+    } 
     return flattenObj("", obj);
   }
   getProfileDTO(userDB, avatar) {
@@ -18,6 +19,7 @@ class UserMapper {
       lastName: userDB?.profile?.lastName || "",
       username: userDB?.username || "",
       avatar: avatar || "",
+      description : userDB?.profile?.description || ""
     };
   }
   getMyProfileDTO(userDB, imageUrl) {
@@ -27,6 +29,7 @@ class UserMapper {
       username: userDB?.username || "",
       email: userDB?.email || "",
       avatar: imageUrl || "",
+      description:userDB?.profile?.description || "",
     };
   }
   getRequests(requestsDB) {

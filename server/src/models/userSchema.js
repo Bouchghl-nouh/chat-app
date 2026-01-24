@@ -14,6 +14,7 @@ const userSchema = new mongoose.Schema(
         bucket: String, 
         updatedAt: { type: Date},
       },
+      description:String
     },
     passwordChangedAt: { type: Date},
     lastSeen: { type: Date },
