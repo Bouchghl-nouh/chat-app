@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react";
 import {
   Camera,
   Loader2,
@@ -9,11 +8,8 @@ import {
   Check,
   Lock,
 } from "lucide-react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import unknown from "../../../assets/unkown.webp";
-import { profileSchema } from "../validation/updateProfile.schema";
 import type { ProfileFormSchema } from "../validation/updateProfile.schema";
+import { useProfileForm } from "../hooks/useProfileForm";
 import {
   Field,
   FieldError,
@@ -33,63 +29,21 @@ const inputClasses = (error?: any) =>
     error && "border-red-500 focus:border-red-500 focus:ring-red-100",
   );
 const ProfileForm = () => {
-  const [preview, setPreview] = useState<string>(unknown);
-  const [file, setFile] = useState<File | null>(null);
-  const [isEditing, setIsEditing] = useState<boolean>(false);
-
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm<ProfileFormSchema>({
-    resolver: zodResolver(profileSchema),
-  });
-
   const { data, isLoading, isError, error } = useMyProfile();
   const updateProfile = useUpdateProfile();
-
-  useEffect(() => {
-    if (data) {
-      reset({
-        username: data.username || "",
-        firstName: data.firstName || "",
-        lastName: data.lastName || "",
-        description: data.description || "",
-      });
-    }
-    if (data?.avatar) {
-      setPreview(data.avatar);
-    }
-  }, [data, reset]);
+  const {
+    form,
+    preview,
+    file,
+    isEditing,
+    handleCancel,
+    handleFileChange,
+    setIsEditing,
+  } = useProfileForm(data);
 
   const onSubmit = (formData: ProfileFormSchema) => {
-    updateProfile.mutate({data:{...formData,avatar:file?.name},file});
+    updateProfile.mutate({ data: { ...formData, avatar: file?.name }, file });
     setIsEditing(false);
-  };
-
-  const handleCancel = () => {
-    if (data) {
-      reset({
-        username: data.username || "",
-        firstName: data.firstName || "",
-        lastName: data.lastName || "",
-        description: data.description || "",
-      });
-      if (data.avatar) {
-        setPreview(data.avatar);
-      }
-      setFile(null);
-    }
-    setIsEditing(false);
-  };
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFile = e.target.files?.[0];
-    if (selectedFile) {
-      setFile(selectedFile);
-      setPreview(URL.createObjectURL(selectedFile));
-    }
   };
 
   const handleChangePassword = () => {
@@ -97,21 +51,13 @@ const ProfileForm = () => {
     console.log("Change password clicked");
   };
 
-  useEffect(() => {
-    return () => {
-      if (preview?.startsWith("blob:")) {
-        URL.revokeObjectURL(preview);
-      }
-    };
-  }, [preview]);
-
   if (isLoading) return <ProfileFormSkeleton />;
   if (isError) return <div>Error: {error?.message}</div>;
 
   return (
     <form
       className="bg-white rounded-xl shadow-md border border-slate-200 p-4 mt-4"
-      onSubmit={handleSubmit(onSubmit)}
+      onSubmit={form.handleSubmit(onSubmit)}
     >
       {/* Header Section */}
       <div className="flex flex-col sm:flex-row items-center sm:items-center justify-between gap-4 mb-8 pb-6 border-b border-slate-200">
@@ -200,62 +146,28 @@ const ProfileForm = () => {
           />
         </Field>
 
-        <Field>
-          <FieldLabel className="text-sm font-semibold text-slate-700 mb-2 flex items-center gap-2">
-            <User className="w-4 h-4" />
-            Username
-          </FieldLabel>
-          <Input
-            type="text"
-            placeholder="Enter your username"
-            disabled={!isEditing}
-            className={inputClasses(errors.username)}
-            {...register("username")}
-          />
-          {errors.username && (
-            <FieldError className="text-xs text-red-600 mt-1">
-              {errors.username.message}
-            </FieldError>
-          )}
-        </Field>
-
-        <Field>
-          <FieldLabel className="text-sm font-semibold text-slate-700 mb-2 flex items-center gap-2">
-            <User className="w-4 h-4" />
-            First Name
-          </FieldLabel>
-          <Input
-            type="text"
-            placeholder="Enter your first name"
-            disabled={!isEditing}
-            className={inputClasses(errors.firstName)}
-            {...register("firstName")}
-          />
-          {errors.firstName && (
-            <FieldError className="text-xs text-red-600 mt-1">
-              {errors.firstName.message}
-            </FieldError>
-          )}
-        </Field>
-
-        <Field>
-          <FieldLabel className="text-sm font-semibold text-slate-700 mb-2 flex items-center gap-2">
-            <User className="w-4 h-4" />
-            Last Name
-          </FieldLabel>
-          <Input
-            type="text"
-            placeholder="Enter your last name"
-            disabled={!isEditing}
-            className={inputClasses(errors.lastName)}
-            {...register("lastName")}
-          />
-          {errors.lastName && (
-            <FieldError className="text-xs text-red-600 mt-1">
-              {errors.lastName.message}
-            </FieldError>
-          )}
-        </Field>
+        {["username", "firstName", "lastName"].map((field) => (
+          <Field key={field}>
+            <FieldLabel className="ext-sm font-semibold text-slate-700 mb-2 flex items-center gap-2">
+              <User className="w-4 h-4" /> {field}
+            </FieldLabel>
+            <Input
+              disabled={!isEditing}
+              className={inputClasses(
+                form.formState.errors[field as keyof ProfileFormSchema],
+              )}
+              {...form.register(field as keyof ProfileFormSchema)}
+            />
+            {form.formState.errors[field as keyof ProfileFormSchema] && (
+              <FieldError className="text-xs text-red-600 mt-1">
+                {
+                  form.formState.errors[field as keyof ProfileFormSchema]
+                    ?.message
+                }
+              </FieldError>
+            )}
+          </Field>
+        ))}
 
         <Field className="lg:col-span-2">
           <FieldLabel className="text-sm font-semibold text-slate-700 mb-2 flex items-center gap-2">
@@ -266,12 +178,12 @@ const ProfileForm = () => {
             placeholder="Tell us about yourself..."
             disabled={!isEditing}
             rows={10}
-            className={inputClasses(errors.description)}
-            {...register("description")}
+            className={inputClasses(form.formState.errors.description)}
+            {...form.register("description")}
           />
-          {errors.description && (
+          {form.formState.errors.description && (
             <FieldError className="text-xs text-red-600 mt-1">
-              {errors.description.message}
+              {form.formState.errors.description.message}
             </FieldError>
           )}
         </Field>
