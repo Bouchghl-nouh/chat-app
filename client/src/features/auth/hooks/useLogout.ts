@@ -3,19 +3,17 @@ import { logout } from "@/features/auth/api/logout.api";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch } from "@/hooks/redux";
 import { clearCredentials } from "@/store/slices/userSlice";
+import { useQueryClient } from "@tanstack/react-query";
 export function useLogoutUser() {
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   return useMutation({
     mutationFn: logout,
-    onSuccess: () => {
+    onSettled : () =>{
       dispatch(clearCredentials());
-      navigate("/login");
-    },
-    onError: (error) => {
-      console.error("Logout failed:", error);
-      dispatch(clearCredentials());
-      navigate("/login");
-    },
+      queryClient.clear();
+      navigate("/login",{replace:true});
+    }
   });
 }

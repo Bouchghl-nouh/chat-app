@@ -45,7 +45,7 @@ const ProfileForm = () => {
     updateProfile.mutate({ data: { ...formData, avatar: file?.name }, file });
     setIsEditing(false);
   };
-
+  //TODO :  Implement change password functionality
   const handleChangePassword = () => {
     // TODO: Implement password change logic
     console.log("Change password clicked");

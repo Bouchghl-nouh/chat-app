@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import unknownImg from "../../../assets/unkown.webp";
+import unknownImg from "@/assets/unkown.webp";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
