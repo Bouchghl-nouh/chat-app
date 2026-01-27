@@ -7,7 +7,6 @@ import {
   type ProfileFormSchema,
 } from "../validation/updateProfile.schema";
 import { type getProfile } from "../types/userProfile";
-
 export function useProfileForm(initialData: getProfile | undefined) {
   const [preview, setPreview] = useState<string>(
     initialData?.avatar || unknownImg,
@@ -27,10 +26,7 @@ export function useProfileForm(initialData: getProfile | undefined) {
   useEffect(() => {
     if (initialData) {
       form.reset({
-        username: initialData?.username ?? "",
-        firstName: initialData?.firstName ?? "",
-        lastName: initialData?.lastName ?? "",
-        description: initialData?.description ?? "",
+        ...initialData,
         avatar: undefined,
       });
       if (initialData.avatar) setPreview(initialData.avatar);

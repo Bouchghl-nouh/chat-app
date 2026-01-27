@@ -23,6 +23,8 @@ import { useMyProfile } from "../hooks/useMyProfile";
 import { useUpdateProfile } from "../hooks/useUpdateProfile";
 import ProfileFormSkeleton from "./profileFormSkelton";
 import { cn } from "@/lib/utils";
+import { useAppDispatch } from "@/hooks/redux";
+import { clearCredentials } from "@/store/slices/userSlice";
 const inputClasses = (error?: any) =>
   cn(
     "w-full px-4 py-2.5 border rounded-lg transition-all text-sm",
@@ -40,10 +42,21 @@ const ProfileForm = () => {
     handleFileChange,
     setIsEditing,
   } = useProfileForm(data);
-
+  const dispatch = useAppDispatch();
   const onSubmit = (formData: ProfileFormSchema) => {
-    updateProfile.mutate({ data: { ...formData, avatar: file?.name }, file });
-    setIsEditing(false);
+    updateProfile.mutate(
+      { data: { ...formData, avatar: file?.name }, file },
+      {
+        onSuccess: () => {
+          dispatch(clearCredentials());
+          setIsEditing(false);
+        },
+        onError: (error) => {
+          console.error("Error updating profile:", error);
+          setIsEditing(false);
+        },
+      },
+    );
   };
   //TODO :  Implement change password functionality
   const handleChangePassword = () => {

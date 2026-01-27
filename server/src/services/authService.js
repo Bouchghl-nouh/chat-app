@@ -7,12 +7,12 @@ const {NotFoundError,BadRequestError} = require("../utils/errorHandling");
 class AuthService {
   #generateTokenPair(user) {
     const accessToken = jwt.sign(
-      { id: user._id, username: user.username, email: user.email },
+      { id: user._id, username: user.username, email: user.email , url: user?.profile?.avatar?.url ?? "" },
       process.env.JWT_SECRET,
       { expiresIn: authConfig.accessTokenExpiry }
     );
     const refreshToken = jwt.sign(
-      { id: user._id, username: user.username, email: user.email },
+      { id: user._id, username: user.username, email: user.email, url: user?.profile?.avatar?.url ?? "" },
       process.env.JWT_REFRESH_SECRET,
       { expiresIn: authConfig.refreshTokenExpiry }
     );
