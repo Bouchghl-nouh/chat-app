@@ -23,7 +23,7 @@ export function ProfileDropdown() {
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="relative h-8 w-8 rounded-full ">
             <Avatar className="h-8 w-8 ">
-              <AvatarImage src={`${data?.downloadUrl}1`} alt="@shadcn" onLoadingStatusChange={(status)=>{
+              <AvatarImage src={data?.downloadUrl} alt="@shadcn" onLoadingStatusChange={(status)=>{
                 if(status === "error"){
                   refetch();
                 }
