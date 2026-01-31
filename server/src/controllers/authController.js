@@ -32,7 +32,6 @@ class AuthController {
   }
   async updatePassword(req,res){
       await authService.updatePassword(req.user.id,req.body);
-      res.clearCookie("refreshToken");
       sendResponse(res,200,true,"password updated successfully");
   }
   async refreshAccessToken(req, res) {

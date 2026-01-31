@@ -47,7 +47,7 @@ describe("AuthController integrated Tests", () => {
       expect(authService.register).toHaveBeenCalledWith(
         "user",
         "pass",
-        "g@gmail.com"
+        "g@gmail.com",
       );
     });
     test("should fail if email already exist", async () => {
@@ -111,13 +111,13 @@ describe("AuthController integrated Tests", () => {
       expect(res.body.data).toEqual({ accessToken: "newAccess" });
       const cookies = res.headers["set-cookie"];
       expect(cookies.some((c) => c.includes("refreshToken=newRefresh"))).toBe(
-        true
+        true,
       );
       expect(authService.refreshToken).toHaveBeenCalledWith("oldToken");
     });
     test("should fail if refresh token is invalid", async () => {
       authService.refreshToken.mockRejectedValue(
-        new Error("Invalid or expired refresh token")
+        new Error("Invalid or expired refresh token"),
       );
 
       const res = await request(app)
@@ -133,8 +133,7 @@ describe("AuthController integrated Tests", () => {
       authService.updatePassword.mockResolvedValue();
       const res = await request(app)
         .patch("/auth/newPassword")
-        .send({ password: "password", newPassword: "newPassword" });
-      expect(res.headers["set-cookie"][0]).toMatch(/refreshToken=/);
+        .send({ oldPassword: "password", password: "newPassword" });
       expect(res.status).toBe(200);
       expect(res.body.success).toBe(true);
       expect(res.body.message).toBe("password updated successfully");

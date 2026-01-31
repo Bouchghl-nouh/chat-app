@@ -16,8 +16,8 @@ const loginSchema = Joi.object({
 }).options({ allowUnknown: false });
 
 const updatePasswordSchema = Joi.object({
+  oldPassword: Joi.string().min(4).max(100).required(),
   password: Joi.string().min(4).max(100).required(),
-  newPassword: Joi.string().min(4).max(100).required(),
 }).options({ allowUnknown: false });
 module.exports = {
   registerSchema,

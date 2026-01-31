@@ -77,15 +77,15 @@ class AuthService {
     }
   }
   async updatePassword(userId, data) {
-      const {password,newPassword}=data;
-      if(password === newPassword){
+      const {oldPassword,password}=data;
+      if(oldPassword === password){
         throw new BadRequestError("New password must differ from current password")
       }
       const user = await userRepo.findById(userId);
       if (!user) throw new NotFoundError("User not found");
-      const isMatch = await bcrypt.compare(password, user.password);
+      const isMatch = await bcrypt.compare(oldPassword, user.password);
       if (!isMatch) throw new BadRequestError("Invalid credentials");
-      const hashedPassword = await bcrypt.hash(newPassword,authConfig.bcryptRounds);
+      const hashedPassword = await bcrypt.hash(password,authConfig.bcryptRounds);
       await userRepo.update(userId,{password:hashedPassword,passwordChangedAt:new Date()});
       await refreshTokenRepo.deleteByUser(userId);
   }

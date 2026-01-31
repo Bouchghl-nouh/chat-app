@@ -196,7 +196,7 @@ describe("AuthService", () => {
   describe("update Password", () => {
     test("it should update the password", async () => {
       const userId = 1;
-      const data = { password: "password", newPassword: "newPassword" };
+      const data = { oldPassword: "password", password: "newPassword" };
       userRepo.findById.mockResolvedValue({ password: "password" });
       bcrypt.compare.mockResolvedValue(true);
       bcrypt.hash.mockResolvedValue("hashedPassword");
