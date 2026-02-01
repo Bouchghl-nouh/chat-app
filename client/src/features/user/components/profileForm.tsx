@@ -17,10 +17,7 @@ import {
   FieldGroup,
   FieldLabel,
 } from "@/components/ui/field";
-import {
-  Dialog,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import ChangePasswordDialog from "@/features/user/components/updatePasswordDialog";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -38,7 +35,7 @@ const inputClasses = (error?: any) =>
   );
 const ProfileForm = () => {
   const { data, isLoading, isError, error } = useMyProfile();
-  const [open,setOpen] = useState(false);
+  const [open, setOpen] = useState(false);
   const updateProfile = useUpdateProfile();
   const {
     form,
@@ -71,14 +68,14 @@ const ProfileForm = () => {
 
   return (
     <>
-      <div className="bg-white rounded-xl shadow-md border border-slate-200 p-4 mt-4">
+      <div className="rounded-xl shadow-md border border-slate-200 p-4 mt-4">
         {/* Header Section */}
         <div className="flex flex-col sm:flex-row items-center sm:items-center justify-between gap-4 mb-8 pb-6 border-b border-slate-200">
           {/* Profile Picture */}
           <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6 w-full sm:w-auto">
             <div className="relative group">
               <div className="relative w-20 h-20 sm:w-32 sm:h-32">
-                <div className="absolute inset-0 rounded-full bg-gradient-to-br from-slate-300 to-slate-400 p-0.5">
+                <div className="absolute inset-0 rounded-full bg-gradient-to-br  p-0.5">
                   <div className="w-full h-full rounded-full bg-white p-0.5 shadow-lg">
                     <div className="w-full h-full rounded-full overflow-hidden bg-slate-100">
                       <img

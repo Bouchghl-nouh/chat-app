@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/field";
 import { Loader2 } from "lucide-react";
 
-import PasswordInputWithToggle from "../../../components/PasswordInput";
+import PasswordInputWithToggle from "@/components/PasswordInput";
 import { Input } from "@/components/ui/input";
 import { useRegisterUser } from "../hooks/useRegister";
 export function RegisterForm() {

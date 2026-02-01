@@ -7,8 +7,9 @@ import { server } from "@/test/setup";
 import { LoginPage } from "./index";
 import { Toaster } from "@/components/ui/sonner"
 import { Provider } from 'react-redux'
-import {store} from '../../../store'
-import type { LoginRequest } from "../api/login.api";
+import {store} from '@/store'
+import type { LoginFormSchema } from "@/features/auth/validation/login.schema";
+
 // Mock useNavigate
 const mockNavigate = vi.fn();
 vi.mock("react-router-dom", async () => {
@@ -67,7 +68,7 @@ describe("LoginPage Integration Tests", () => {
   it("should show server error message on login failure", async () => {
     server.use(
       http.post(`${BASE_URL}/auth/login`, async ({ request }) => {
-        const body = (await request.json()) as LoginRequest;
+        const body = (await request.json()) as LoginFormSchema;
         if (body.email !== "existing@email.com") {
           return HttpResponse.json(
             {

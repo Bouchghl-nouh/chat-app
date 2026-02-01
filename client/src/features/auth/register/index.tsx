@@ -1,7 +1,7 @@
 import RegisterForm from "../components/RegisterForm";
 import { Logo } from "@/assets/logo";
 import { Link } from "react-router-dom";
-import { MessageCircle, Users, Globe, Lock } from "lucide-react";
+import { Users, Globe, Lock } from "lucide-react";
 
 export function RegisterPage() {
   return (

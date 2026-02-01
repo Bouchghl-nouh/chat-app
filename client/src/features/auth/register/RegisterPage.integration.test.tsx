@@ -6,7 +6,7 @@ import { http, HttpResponse } from "msw";
 import { server } from "@/test/setup";
 import { RegisterPage } from "./index";
 import { Toaster } from "@/components/ui/sonner"
-import type { RegisterRequest } from "../api/register.api";
+import type { RegisterRequest } from "@/features/auth/validation/register.schema";
 // Mock useNavigate
 const mockNavigate = vi.fn();
 vi.mock("react-router-dom", async () => {
