@@ -2,8 +2,8 @@ import { z } from "zod";
 
 export const profileSchema = z.object({
   username: z.string().min(2, "Name should be at least 2 characters"),
-  firstName: z.string().min(2, "First name should be at least 2 characters").optional(),
-  lastName: z.string().min(2, "Last name should be at least 2 characters").optional(),
+  firstName: z.string().min(2, "First name should be at least 2 characters"),
+  lastName: z.string().min(2, "Last name should be at least 2 characters"),
   description: z
     .string()
     .max(500, "Description should be at most 500 characters")

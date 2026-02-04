@@ -90,6 +90,7 @@ const ProfileForm = () => {
                 {isEditing && (
                   <label
                     htmlFor="avatar"
+                    aria-label="avatar"
                     className="absolute inset-0 flex items-center justify-center bg-slate-900/75 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 cursor-pointer backdrop-blur-sm m-1"
                   >
                     <Camera className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
@@ -148,11 +149,15 @@ const ProfileForm = () => {
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <FieldGroup className="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-6">
             <Field className="lg:col-span-2">
-              <FieldLabel className="text-sm font-semibold text-slate-700 mb-2 flex items-center gap-2">
+              <FieldLabel
+                htmlFor="email"
+                className="text-sm font-semibold text-slate-700 mb-2 flex items-center gap-2"
+              >
                 <Mail className="w-4 h-4 text-slate-500" />
                 Email Address
               </FieldLabel>
               <Input
+                id="email"
                 type="email"
                 value={data?.email ?? "example@gmail.com"}
                 disabled
@@ -162,10 +167,14 @@ const ProfileForm = () => {
 
             {["username", "firstName", "lastName"].map((field) => (
               <Field key={field}>
-                <FieldLabel className="ext-sm font-semibold text-slate-700 mb-2 flex items-center gap-2">
+                <FieldLabel
+                  htmlFor={field}
+                  className="ext-sm font-semibold text-slate-700 mb-2 flex items-center gap-2"
+                >
                   <User className="w-4 h-4" /> {field}
                 </FieldLabel>
                 <Input
+                  id={field}
                   disabled={!isEditing}
                   className={inputClasses(
                     form.formState.errors[field as keyof ProfileFormSchema],
@@ -184,11 +193,15 @@ const ProfileForm = () => {
             ))}
 
             <Field className="lg:col-span-2">
-              <FieldLabel className="text-sm font-semibold text-slate-700 mb-2 flex items-center gap-2">
+              <FieldLabel
+                htmlFor="description"
+                className="text-sm font-semibold text-slate-700 mb-2 flex items-center gap-2"
+              >
                 <FileText className="w-4 h-4 text-violet-600" />
                 Bio
               </FieldLabel>
               <Textarea
+                id="description"
                 placeholder="Tell us about yourself..."
                 disabled={!isEditing}
                 rows={10}

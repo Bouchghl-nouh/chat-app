@@ -7,7 +7,7 @@ export const changePasswordSchema = z
       .min(4, { error: "Password should be at least 4 characters" }),
     confirmPassword: z
       .string()
-      .min(4, { error: "Password should be at least 4 characters" }),
+      .min(4, { error: "Confirm Password should be at least 4 characters" }),
   })
   .refine((data) => data.password === data.confirmPassword, {
     path: ["confirmPassword"],

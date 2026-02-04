@@ -1,5 +1,5 @@
 import ProfileForm from "../components/profileForm";
-const User = () => {
+const UserProfile = () => {
   return (
     <main className="p-4 sm:p-8 h-full grid grid-cols-1 lg:grid-cols-8 gap-4 lg:gap-8 mt-6">
       <section className="hidden lg:block lg:col-span-1"></section>
@@ -11,4 +11,4 @@ const User = () => {
   );
 };
 
-export default User;
+export default UserProfile;
