@@ -32,7 +32,7 @@ class FriendshipRepository {
         recipient: userId,
         status: "pending",
       })
-      .populate("requester", "username profile lastSeen");
+      .populate("requester", "username profile lastSeen").lean();
   }
   async getPendingRequest(recipient, requester) {
     return await friendshipSchema.findOne({

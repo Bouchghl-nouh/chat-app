@@ -19,6 +19,19 @@ class UserRepository {
     { new: true}
   );
   }
+  async findUsers(query,{page,limit}){
+    const skip = (page-1)*limit ;
+    const [users,total] = await Promise.all([
+      User.find(query).skip(skip).limit(limit).lean(),
+      User.countDocuments(query),
+    ]);
+    return {
+      users,
+      total,
+      page,
+      pages:Math.ceil(total/limit)
+    }
+  }
 }
 
 module.exports = new UserRepository();

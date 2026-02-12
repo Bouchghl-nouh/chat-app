@@ -1,14 +1,25 @@
 import { http } from "@/api/base";
 
-
-export interface dashboardData {
-  username: string;
-  id: string;
-  email:string;
-  iat:number,
-  exp:number
+export interface usersList {
+  users: Array<{
+    id: string;
+    username: string;
+    firstName: string;
+    lastName: string;
+    avatar: string;
+  }>;
+  total: number;
+  page: number;
+  pages: number;
 }
 
-export const profile = async (): Promise<dashboardData> => {
-  return http.get("/profile");
+export const users = async (
+  username: string,
+  page: number,
+): Promise<usersList> => {
+  return http.get("/user/all", {
+    page,
+    limit: 5,
+    username,
+  },undefined,false);
 };

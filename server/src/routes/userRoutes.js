@@ -9,6 +9,7 @@ const {updateMeSchema} = require("../validators/userValidator")
 router.get("/profile/:id",verifyJWT,validateObjectId, UserController.getProfile);
 router.post("/friendship/:id",verifyJWT,validateObjectId,UserController.requestFriendship);
 router.get("/me",verifyJWT, UserController.getMyProfile);
+router.get("/all",verifyJWT, UserController.getUsers);
 router.patch("/me",verifyJWT,validateRequest(updateMeSchema),UserController.updateProfile);
 router.get("/me/requests",verifyJWT,UserController.getFriendshipRequests);
 router.patch("/me/friendship/accept/:id",verifyJWT,validateObjectId,UserController.acceptFriendshipRequest);

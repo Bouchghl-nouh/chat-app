@@ -9,6 +9,7 @@ export function useUpdateProfile() {
       updateProfileWithUpload(data, file),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["myProfile"] });
+      queryClient.invalidateQueries({ queryKey: ["users"] });
     }
   });
 }

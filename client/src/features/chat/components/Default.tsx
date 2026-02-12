@@ -1,7 +1,11 @@
+import {useState} from "react";
 import {MessagesSquare} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import UsersDialog  from "./UsersDialog";
 const Default = () => {
+  const [open,setOpen] = useState(false);
+
   return (
     <div
         className={cn(
@@ -13,13 +17,14 @@ const Default = () => {
             <MessagesSquare className="size-8" />
           </div>
           <div className="space-y-2 text-center">
-            <h1 className="text-xl font-semibold">Your messages</h1>
+            <h1 className="text-xl font-semibold">Users</h1>
             <p className="text-muted-foreground text-sm">
-              Send a message to start a chat.
+              Connect with other users and start chatting!
             </p>
           </div>
-          <Button>Send message</Button>
+          <Button onClick={() => setOpen(true)}>Show Users</Button>
         </div>
+        <UsersDialog open={open} setOpen={setOpen} />
       </div>
   )
 }

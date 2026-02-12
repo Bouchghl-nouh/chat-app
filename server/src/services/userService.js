@@ -8,6 +8,7 @@ const {
   ConflictError,
   UnauthorizedError,
 } = require("../utils/errorHandling");
+const userMapper = require("../mappers/userMapper");
 class UserService {
   async getUserProfile(userId) {
     const userData = await userRepo.findById(userId);
@@ -72,8 +73,9 @@ class UserService {
   }
   async getPendingRequests(userId) {
     const data = await friendshipRepo.getPendingRequests(userId);
-    const dataWithImages = await UserMapper.getDataWithImages(data);
-    return UserMapper.getRequests(dataWithImages);
+    const mappedRequests = data.map((element)=>element?.requester)
+    const dataWithImages = await UserMapper.getUsersWithImages(mappedRequests);
+    return UserMapper.getUsersDTO(dataWithImages);
   }
   async acceptFriendshipRequest(recipientId, requesterId) {
     const friendship = await friendshipRepo.getPendingRequest(
@@ -116,6 +118,17 @@ class UserService {
       "accepted",
       blockerId
     );
+  }
+  async getUsers(filter){
+    const {page,limit,username} = filter ;
+    const query = {};
+    query.$or = [
+      {username:{$regex:username ?? "",$options:"i"}}
+    ]
+    const data =  await userRepo.findUsers(query,{page,limit});
+    const dataWithImages = await UserMapper.getUsersWithImages(data?.users);
+    const users =  UserMapper.getUsersDTO(dataWithImages);
+    return {...data,users};
   }
 }
 module.exports = new UserService();

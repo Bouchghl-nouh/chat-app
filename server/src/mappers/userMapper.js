@@ -32,36 +32,37 @@ class UserMapper {
       description:userDB?.profile?.description || "",
     };
   }
-  getRequests(requestsDB) {
+  getUsersDTO(requestsDB) {
     const data = requestsDB.map((element) => {
       return {
-        id: element.requester?._id,
-        username: element.requester?.username,
-        firstName: element.requester?.profile?.firstName || "",
-        lastName: element.requester?.profile?.lastName || "",
+        id: element?._id,
+        username: element?.username,
+        firstName: element?.profile?.firstName || "",
+        lastName: element?.profile?.lastName || "",
         avatar: element.avatarUrl || "",
       };
     });
     return data;
   }
-  async getDataWithImages(DBdata) {
+  async getUsersWithImages(DBdata) {
     return await Promise.all(
       DBdata.map(async (element) => {
-        const avatarKey = element.requester?.profile?.avatar?.url;
+        const avatarKey = element?.profile?.avatar?.url;
         if (!avatarKey) {
           return {
-            ...element.toJSON(),
+            ...element,
             avatarUrl: "",
           };
         }
         const resp = await getPresignedUrl(avatarKey);
         return {
-          ...element.toJSON(),
+          ...element,
           avatarUrl: resp.data.downloadUrl ?? "",
         };
       })
     );
   }
+
 }
 
 module.exports = new UserMapper();
