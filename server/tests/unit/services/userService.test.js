@@ -33,7 +33,7 @@ describe("UserService", () => {
     test("it should throw if user didn't found", async () => {
       const id = 0;
       await expect(userService.getUserProfile(id)).rejects.toThrow(
-        "User not found"
+        "User not found",
       );
     });
     test("get the user profile successfully without image url", async () => {
@@ -45,7 +45,7 @@ describe("UserService", () => {
         profile: {
           firstName: "John",
           lastName: "Doe",
-          description:"description"
+          description: "description",
         },
       };
       userRepo.findById.mockResolvedValue(data);
@@ -55,7 +55,9 @@ describe("UserService", () => {
         lastName: "Doe",
         username: "JohnDoe",
         avatar: "",
-        description:"description"
+        description: "description",
+        canUnBlock: false,
+        status: undefined,
       });
     });
     test("get the user profile successfully with image url", async () => {
@@ -83,11 +85,13 @@ describe("UserService", () => {
         lastName: "Doe",
         username: "JohnDoe",
         avatar: expect.any(String),
-        description:""
+        description: "",
+        status: undefined,
+        canUnBlock: false,
       });
     });
   });
-    describe("getMyProfile", () => {
+  describe("getMyProfile", () => {
     test("get the user profile successfully without image url", async () => {
       const id = 1;
       const data = {
@@ -100,13 +104,14 @@ describe("UserService", () => {
         },
       };
       userRepo.findById.mockResolvedValue(data);
-      const result = await userService.getUserProfile(id);
+      const result = await userService.getMyProfile(id);
       expect(result).toEqual({
         firstName: "John",
         lastName: "Doe",
+        email: "john@gmail.com",
         username: "JohnDoe",
         avatar: "",
-        description:"",
+        description: "",
       });
     });
     test("get the user profile successfully with image url", async () => {
@@ -122,7 +127,7 @@ describe("UserService", () => {
             url: "url",
             bucket: "bucket",
           },
-          description:"desc"
+          description: "desc",
         },
       };
       userRepo.findById.mockResolvedValue(data);
@@ -134,9 +139,9 @@ describe("UserService", () => {
         firstName: "John",
         lastName: "Doe",
         username: "JohnDoe",
-        email:"john@gmail.com",
+        email: "john@gmail.com",
         avatar: expect.any(String),
-        description:"desc"
+        description: "desc",
       });
     });
   });
@@ -189,7 +194,7 @@ describe("UserService", () => {
       const userId = 2;
       userRepo.findById.mockResolvedValue(null);
       await expect(
-        userService.requestFriendship(userId, recipientId)
+        userService.requestFriendship(userId, recipientId),
       ).rejects.toThrow("user doesn't exist");
       expect(friendshipRepo.create).not.toHaveBeenCalled();
     });
@@ -200,7 +205,7 @@ describe("UserService", () => {
         deletedAt: "2025-12-14T18:32:54.492+00:00",
       });
       await expect(
-        userService.requestFriendship(userId, recipientId)
+        userService.requestFriendship(userId, recipientId),
       ).rejects.toThrow("user doesn't exist");
       expect(friendshipRepo.create).not.toHaveBeenCalled();
     });
@@ -211,7 +216,7 @@ describe("UserService", () => {
         deletedAt: "2025-12-14T18:32:54.492+00:00",
       });
       await expect(
-        userService.requestFriendship(userId, recipientId)
+        userService.requestFriendship(userId, recipientId),
       ).rejects.toThrow("user doesn't exist");
       expect(friendshipRepo.create).not.toHaveBeenCalled();
     });
@@ -231,7 +236,7 @@ describe("UserService", () => {
       userRepo.findById.mockResolvedValue({ _id: 1, username: "John" });
       friendshipRepo.checkFriendship.mockResolvedValue({ _id: 1 });
       await expect(
-        userService.requestFriendship(recipientId, userId)
+        userService.requestFriendship(recipientId, userId),
       ).rejects.toThrow("you are already send the request");
       expect(friendshipRepo.create).not.toHaveBeenCalled();
     });
@@ -314,29 +319,41 @@ describe("UserService", () => {
       expect(friendshipRepo.updateStatus).not.toHaveBeenCalled();
     });
     test("request accepted successfully", async () => {
-      const recipient =1;
-      const requester = 2; 
-      friendshipRepo.getPendingRequest.mockResolvedValue({_id:1});
-      await userService.acceptFriendshipRequest(recipient,requester);
-      expect(friendshipRepo.updateStatus).toHaveBeenCalledWith(1,"accepted",recipient)
+      const recipient = 1;
+      const requester = 2;
+      friendshipRepo.getPendingRequest.mockResolvedValue({ _id: 1 });
+      await userService.acceptFriendshipRequest(recipient, requester);
+      expect(friendshipRepo.updateStatus).toHaveBeenCalledWith(
+        1,
+        "accepted",
+        recipient,
+      );
     });
   });
   describe("block friend ", () => {
     test("friend blocked successfully", async () => {
-      const blocker =1;
-      const friend = 2; 
-      friendshipRepo.getPendingRequest.mockResolvedValue({_id:1});
-      await userService.blockFriend(blocker,friend);
-      expect(friendshipRepo.updateStatus).toHaveBeenCalledWith(1,"blocked",blocker)
+      const blocker = 1;
+      const friend = 2;
+      friendshipRepo.getPendingRequest.mockResolvedValue({ _id: 1 });
+      await userService.blockFriend(blocker, friend);
+      expect(friendshipRepo.updateStatus).toHaveBeenCalledWith(
+        1,
+        "blocked",
+        blocker,
+      );
     });
   });
   describe("unblock friend ", () => {
     test("friend blocked successfully", async () => {
-      const blocker =1;
-      const blocked = 2; 
-      friendshipRepo.getPendingRequest.mockResolvedValue({_id:1});
-      await userService.unblockFriend(blocker,blocked);
-      expect(friendshipRepo.updateStatus).toHaveBeenCalledWith(1,"accepted",blocker)
+      const blocker = 1;
+      const blocked = 2;
+      friendshipRepo.getPendingRequest.mockResolvedValue({ _id: 1 });
+      await userService.unblockFriend(blocker, blocked);
+      expect(friendshipRepo.updateStatus).toHaveBeenCalledWith(
+        1,
+        "accepted",
+        blocker,
+      );
     });
   });
 });

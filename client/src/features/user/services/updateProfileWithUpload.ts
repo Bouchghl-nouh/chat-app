@@ -1,8 +1,8 @@
 import { updateProfile } from "../api/updateProfile.api";
 import { uploadFileToUrl } from "@/api/upload.api";
-import type { myProfile } from "@/features/user/types/userProfile";
+import type { userProfile } from "@/features/user/types/userProfile";
 
-export const updateProfileWithUpload = async (data: myProfile,file:File|null )=>{
+export const updateProfileWithUpload = async (data: userProfile,file:File|null )=>{
    try {
         const res = await updateProfile(data);
         if (res?.uploadUrl && file) {

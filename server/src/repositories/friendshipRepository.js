@@ -7,8 +7,8 @@ class FriendshipRepository {
   async findById(id) {
     return await friendshipSchema.findById(id);
   }
-  async checkFriendship(userA, userB) {
-    return await friendshipSchema.findOne({
+   checkFriendship(userA, userB) {
+    return  friendshipSchema.findOne({
       $or: [
         { requester: userA, recipient: userB },
         { requester: userB, recipient: userA },

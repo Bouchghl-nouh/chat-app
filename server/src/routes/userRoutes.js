@@ -7,11 +7,11 @@ const verifyJWT = require("../middleware/verifyJWT");
 const {updateMeSchema} = require("../validators/userValidator")
 
 router.get("/profile/:id",verifyJWT,validateObjectId, UserController.getProfile);
-router.post("/friendship/:id",verifyJWT,validateObjectId,UserController.requestFriendship);
 router.get("/me",verifyJWT, UserController.getMyProfile);
 router.get("/all",verifyJWT, UserController.getUsers);
 router.patch("/me",verifyJWT,validateRequest(updateMeSchema),UserController.updateProfile);
 router.get("/me/requests",verifyJWT,UserController.getFriendshipRequests);
+router.post("/friendship/:id",verifyJWT,validateObjectId,UserController.requestFriendship);
 router.patch("/me/friendship/accept/:id",verifyJWT,validateObjectId,UserController.acceptFriendshipRequest);
 router.patch("/me/friendship/block/:id",verifyJWT,validateObjectId,UserController.blockUser);
 router.patch("/me/friendship/unblock/:id",verifyJWT,validateObjectId,UserController.unblockUser);

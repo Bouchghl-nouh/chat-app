@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import unknownImg from "@/assets/unkown.webp";
 import { useInView } from "react-intersection-observer";
 import { Loader2 } from "lucide-react";
+import type {User} from "../types";
+import { useNavigate } from "react-router-dom";
 import {
   Command,
   CommandDialog,
@@ -25,6 +27,7 @@ export default function UsersDialog({
   const { isDebouncing, debounceValue } = useDebounce(search, 500);
   const { data, error, fetchNextPage, hasNextPage } = useUsersList(debounceValue);
   const { ref, inView } = useInView();
+  const navigate = useNavigate();
   useEffect(() => {
     if (inView) {
       fetchNextPage();
@@ -50,8 +53,8 @@ export default function UsersDialog({
                 <CommandEmpty>No results found.</CommandEmpty>
                 <CommandGroup heading="Suggestions">
                   {data?.pages.map((page) => {
-                    return page.users.map((user: any) => (
-                      <CommandItem key={user.id}>
+                    return page.users.map((user: User) => (
+                      <CommandItem key={user.id} onSelect={()=> navigate("profile/"+user.id)}>
                         <Avatar className="size-8 mr-2">
                           <AvatarImage
                             src={user.avatar || unknownImg}

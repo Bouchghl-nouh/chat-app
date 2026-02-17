@@ -4,12 +4,14 @@ import { Outlet } from "react-router";
 import { useAppSelector } from "@/hooks/redux";
 import { Link } from "react-router";
 import  { IconTelegram } from "@/assets/brand-icons";
+import { Bell } from "lucide-react";
 export function RootLayout() {
   const user = useAppSelector((state) => state.user);
   return (
     <div className="h-screen flex flex-col">
       <div className="absolute self-end px-4 py-2 ">
         <div className="flex gap-4 items-center">
+          <Bell size={16}/>
         <ThemeToggle />
         {user?.accessToken && <ProfileDropdown />}
         </div>

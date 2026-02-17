@@ -1,17 +1,5 @@
 import { http } from "@/api/base";
-
-export interface usersList {
-  users: Array<{
-    id: string;
-    username: string;
-    firstName: string;
-    lastName: string;
-    avatar: string;
-  }>;
-  total: number;
-  page: number;
-  pages: number;
-}
+import type {usersList} from "../types"
 
 export const users = async (
   username: string,

@@ -3,7 +3,8 @@ const sendResponse = require("../utils/responseHandler");
 class UserController {
   async getProfile(req, res) {
     const { id } = req.params;
-    const userProfile = await userService.getUserProfile(id);
+    const me = req.user.id;
+    const userProfile = await userService.getUserProfile(me,id);
     sendResponse(res, 200, true, "user data", userProfile);
   }
   async getMyProfile(req, res) {

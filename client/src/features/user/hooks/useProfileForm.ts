@@ -6,8 +6,8 @@ import {
   profileSchema,
   type ProfileFormSchema,
 } from "../validation/updateProfile.schema";
-import { type getProfile } from "../types/userProfile";
-export function useProfileForm(initialData: getProfile | undefined) {
+import { type userProfile } from "../types/userProfile";
+export function useProfileForm(initialData: userProfile | undefined) {
   const [preview, setPreview] = useState<string>(
     initialData?.avatar || unknownImg,
   );

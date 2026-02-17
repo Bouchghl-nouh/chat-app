@@ -1,5 +1,5 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { users } from "@/features/chat/api/dashboard.api";
+import { users } from "@/features/chat/api/usersList.api";
 
 export function useUsersList(username:string) {
   return useInfiniteQuery({

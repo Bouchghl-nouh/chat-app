@@ -50,7 +50,7 @@ describe("userController integrated Tests", () => {
       expect(res.status).toBe(200);
       expect(res.body.success).toBe(true);
       expect(res.body.message).toBe("user data");
-      expect(userService.getUserProfile).toHaveBeenCalledWith("1");
+      expect(userService.getUserProfile).toHaveBeenCalledWith(1,"1");
     });
     test("user not found", async () => {
       userService.getUserProfile.mockRejectedValue(
