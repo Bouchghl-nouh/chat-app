@@ -1,6 +1,13 @@
 import { setupServer } from "msw/node";
 import { handlers } from "./mocks/handlers";
+class ResizeObserverMock {
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+}
 
+globalThis.ResizeObserver = ResizeObserverMock as any;
+Element.prototype.scrollIntoView = vi.fn();
 // Setup MSW server
 export const server = setupServer(...handlers);
 

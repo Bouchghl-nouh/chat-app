@@ -1,7 +1,9 @@
 const friendshipRepo = require("../repositories/friendshipRepository");
 const userRepo = require("../repositories/userRepository");
+const notificationRepo = require("../repositories/notificationRepository");
 const { upload, getPresignedUrl } = require("../utils/fileService");
 const UserMapper = require("../mappers/userMapper");
+const NotificationMapper = require("../mappers/notificationMapper");
 const {
   NotFoundError,
   BadRequestError,
@@ -15,7 +17,10 @@ class UserService {
     const friendshipData = await friendshipRepo.checkFriendship(me, userId);
     let status = friendshipData?.status;
     let canUnBlock = false;
-    if(status === "blocked" && me === friendshipData?.statusChangedBy.toString()){
+    if (
+      status === "blocked" &&
+      me === friendshipData?.statusChangedBy.toString()
+    ) {
       canUnBlock = true;
     }
     if (status === "pending") {
@@ -31,7 +36,7 @@ class UserService {
       avatar = resp?.data?.downloadUrl ?? "";
     }
     const userProfile = UserMapper.getProfileDTO(userData, avatar);
-    return { ...userProfile, status ,canUnBlock};
+    return { ...userProfile, status, canUnBlock };
   }
   async getMyProfile(userId) {
     const userData = await userRepo.findById(userId);
@@ -77,11 +82,23 @@ class UserService {
     if (friendship) {
       throw new ConflictError("you are already send the request");
     }
-    const data = {
+    const resp = await friendshipRepo.create({
       requester: userId,
       recipient: recipientId,
+    });
+    let notificationEvent = null;
+    if (resp) {
+      const notifData = NotificationMapper.createFriendRequest(
+        recipientId,
+        userId,
+      );
+      await notificationRepo.create(notifData);
+      notificationEvent = NotificationMapper.createEvent(recipientId);
+    }
+    return {
+      friendship: resp,
+      notificationEvent,
     };
-    await friendshipRepo.create(data);
   }
   async getPendingRequests(userId) {
     const data = await friendshipRepo.getPendingRequests(userId);

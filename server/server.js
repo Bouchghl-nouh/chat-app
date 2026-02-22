@@ -4,7 +4,7 @@ dotenv.config();
 const connectDB = require("./src/config/dbConn");
 const app = require("./src/app");
 const socket = require("./src/config/socket");
-
+const registerSockets = require("./src/sockets");
 const PORT = process.env.PORT || 3000;
 
 async function start() {
@@ -12,13 +12,7 @@ async function start() {
     await connectDB();
     const server = http.createServer(app);
     const io = socket.init(server);
-    io.on("connection", (socket) => {
-      console.log("✅ User connected:", socket.user?.username, "ID:", socket.id);
-
-      socket.on("disconnect", () => {
-        console.log("❌ User disconnected:", socket.user?.username);
-      });
-    });
+    registerSockets(io);
     server.listen(PORT, () => {
       console.log(`Server listening on port ${PORT}`);
     });
