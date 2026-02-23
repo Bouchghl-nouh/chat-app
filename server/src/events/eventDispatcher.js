@@ -3,7 +3,7 @@ class EventDispatcher {
   static handlers = {
     NOTIFICATION_CREATED: (payload) => {
       const io = getIO();
-      io.to(payload.userId).emit("notification:new", payload.increment);
+      io.to(payload.receiver).emit("notification:new", payload.increment);
     },
   };
 

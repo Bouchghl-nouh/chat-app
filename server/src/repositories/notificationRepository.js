@@ -5,22 +5,22 @@ class NotificationSchema {
     return notificationSchema.create(data);
   }
 
-  getNotifications(userId) {
+  getNotifications(receiver) {
     return notificationSchema
       .find({
-        userId,
+        receiver,
       })
-      .populate("senderId", "username profile lastSeen createdAt");
+      .populate("sender", "username profile lastSeen createdAt");
   }
-  countUnreadNotifications(userId) {
+  countUnreadNotifications(receiver) {
     return notificationSchema.countDocuments({
-      userId,
+      receiver,
       isRead: false,
     });
   }
-  async update(userId) {
+  async update(receiver) {
     return await notificationSchema.findByIdAndUpdate(
-      userId,
+      receiver,
       { isRead: true },
       { new: true },
     );

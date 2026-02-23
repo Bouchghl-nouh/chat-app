@@ -3,12 +3,12 @@ const softDelete = require("../plugins/softDelete");
 
 const notificationSchema = new mongoose.Schema(
   {
-    userId: {
+    receiver: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
-    senderId: {
+    sender: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,

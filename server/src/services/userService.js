@@ -1,9 +1,9 @@
 const friendshipRepo = require("../repositories/friendshipRepository");
 const userRepo = require("../repositories/userRepository");
-const notificationRepo = require("../repositories/notificationRepository");
 const { upload, getPresignedUrl } = require("../utils/fileService");
 const UserMapper = require("../mappers/userMapper");
-const NotificationMapper = require("../mappers/notificationMapper");
+const NOTIFICATION_TYPES = require("../constants/notificationsTypes");
+const notificationService = require("./notificationService");
 const {
   NotFoundError,
   BadRequestError,
@@ -67,8 +67,8 @@ class UserService {
     await userRepo.update(userId, update);
     return { uploadUrl };
   }
-  async requestFriendship(userId, recipientId) {
-    if (userId === recipientId) {
+  async requestFriendship(requesterId, recipientId) {
+    if (requesterId === recipientId) {
       throw new BadRequestError("you can't be friend with yourself");
     }
     const recipient = await userRepo.findById(recipientId);
@@ -76,33 +76,26 @@ class UserService {
       throw new NotFoundError("user doesn't exist");
     }
     const friendship = await friendshipRepo.checkFriendship(
-      userId,
+      requesterId,
       recipientId,
     );
     if (friendship) {
       throw new ConflictError("you are already send the request");
     }
     const resp = await friendshipRepo.create({
-      requester: userId,
+      requester: requesterId,
       recipient: recipientId,
     });
-    let notificationEvent = null;
+    let event = null;
     if (resp) {
-      const notifData = NotificationMapper.createFriendRequest(
-        recipientId,
-        userId,
+      event = await notificationService.notify(
+        NOTIFICATION_TYPES.FRIEND_REQUEST_SENT,
+        { recipientId, requesterId },
       );
-      await notificationRepo.create(notifData);
-      notificationEvent = NotificationMapper.createEvent(recipientId);
     }
     return {
       friendship: resp,
-      event: notificationEvent
-        ? {
-            type: "NOTIFICATION_CREATED",
-            payload: notificationEvent,
-          }
-        : null,
+      event,
     };
   }
   async getPendingRequests(userId) {
@@ -119,11 +112,23 @@ class UserService {
     if (!friendship) {
       throw new NotFoundError("request doesn't exist");
     }
-    return await friendshipRepo.updateStatus(
+
+    const resp = await friendshipRepo.updateStatus(
       friendship._id,
       "accepted",
       recipientId,
     );
+    let event = null;
+    if (resp) {
+      event = await notificationService.notify(
+        NOTIFICATION_TYPES.FRIEND_REQUEST_ACCEPTED,
+        { recipientId, requesterId },
+      );
+    }
+    return {
+      friendship: resp,
+      event,
+    };
   }
   async blockFriend(blockerId, friendId) {
     const friendship = await friendshipRepo.checkFriendship(
@@ -133,11 +138,22 @@ class UserService {
     if (!friendship) {
       throw new NotFoundError("request doesn't exist");
     }
-    return await friendshipRepo.updateStatus(
+    const resp = await friendshipRepo.updateStatus(
       friendship._id,
       "blocked",
       blockerId,
     );
+    let event = null;
+    if (resp) {
+      event = await notificationService.notify(
+        NOTIFICATION_TYPES.FRIEND_BLOCKED,
+        { recipientId: friendId, requesterId: blockerId },
+      );
+    }
+    return {
+      friendship: resp,
+      event,
+    };
   }
   async unblockFriend(blockerId, blockedId) {
     const friendship = await friendshipRepo.checkFriendship(
@@ -147,11 +163,22 @@ class UserService {
     if (!friendship) {
       throw new UnauthorizedError("you don't have permission");
     }
-    return await friendshipRepo.updateStatus(
+    const resp = await friendshipRepo.updateStatus(
       friendship._id,
       "accepted",
       blockerId,
     );
+    let event = null;
+    if (resp) {
+      event = await notificationService.notify(
+        NOTIFICATION_TYPES.FRIEND_UNBLOCK,
+        { recipientId: blockedId, requesterId: blockerId },
+      );
+    }
+    return {
+      friendship: resp,
+      event,
+    };
   }
   async getUsers(filter) {
     const { page, limit, username } = filter;

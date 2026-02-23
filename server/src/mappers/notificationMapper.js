@@ -1,16 +1,37 @@
 class NotificationMapper {
-  createFriendRequest(userId, senderId) {
+  createFriendRequest(receiver, sender) {
     return {
-      userId,
-      senderId,
+      receiver,
+      sender,
       message: "new Friendship Request",
     };
   }
-  createEvent(userId){
+  createAcceptRequest(receiver, sender) {
     return {
-        userId,
-        increment:1
+      receiver,
+      sender,
+      message: "You can Start conversation now",
+    };
+  }
+  createBlockFriend(receiver, sender) {
+    return {
+      receiver,
+      sender,
+      message: "You are blocked",
+    };
+  }
+  createUnblockFriend(receiver,sender){
+    return{
+      receiver,
+      sender,
+      message:"You are unblocked"
     }
+  }
+  createEvent(receiver) {
+    return {
+      receiver,
+      increment: 1,
+    };
   }
 }
 

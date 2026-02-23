@@ -1,11 +1,11 @@
 const userService = require("../services/userService");
 const sendResponse = require("../utils/responseHandler");
-const EventDispatcher = require("../events/eventDispatcher")
+const EventDispatcher = require("../events/eventDispatcher");
 class UserController {
   async getProfile(req, res) {
     const { id } = req.params;
     const me = req.user.id;
-    const userProfile = await userService.getUserProfile(me,id);
+    const userProfile = await userService.getUserProfile(me, id);
     sendResponse(res, 200, true, "user data", userProfile);
   }
   async getMyProfile(req, res) {
@@ -20,7 +20,7 @@ class UserController {
   async requestFriendship(req, res) {
     const { id } = req.params;
     const result = await userService.requestFriendship(req.user.id, id);
-    if(result.event){
+    if (result.event) {
       EventDispatcher.dispatch(result.event);
     }
     sendResponse(res, 201, true, "your request was sent successfully");
@@ -31,17 +31,26 @@ class UserController {
   }
   async acceptFriendshipRequest(req, res) {
     const { id } = req.params;
-    await userService.acceptFriendshipRequest(req.user.id, id);
+    const result = await userService.acceptFriendshipRequest(req.user.id, id);
+    if (result.event) {
+      EventDispatcher.dispatch(result.event);
+    }
     sendResponse(res, 200, true, "You are friends now");
   }
   async blockUser(req, res) {
     const { id } = req.params;
-    await userService.blockFriend(req.user.id, id);
+    const result = await userService.blockFriend(req.user.id, id);
+    if (result.event) {
+      EventDispatcher.dispatch(result.event);
+    }
     sendResponse(res, 200, true, "You blocked this friend");
   }
   async unblockUser(req, res) {
     const { id } = req.params;
-    await userService.unblockFriend(req.user.id, id);
+    const result = await userService.unblockFriend(req.user.id, id);
+    if (result.event) {
+      EventDispatcher.dispatch(result.event);
+    }
     sendResponse(res, 200, true, "You are friends again");
   }
   async getUsers(req, res) {
