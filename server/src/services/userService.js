@@ -97,7 +97,12 @@ class UserService {
     }
     return {
       friendship: resp,
-      notificationEvent,
+      event: notificationEvent
+        ? {
+            type: "NOTIFICATION_CREATED",
+            payload: notificationEvent,
+          }
+        : null,
     };
   }
   async getPendingRequests(userId) {

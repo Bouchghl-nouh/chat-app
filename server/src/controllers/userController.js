@@ -1,6 +1,6 @@
 const userService = require("../services/userService");
 const sendResponse = require("../utils/responseHandler");
-const { getIO } = require("../config/socket");
+const EventDispatcher = require("../events/eventDispatcher")
 class UserController {
   async getProfile(req, res) {
     const { id } = req.params;
@@ -20,12 +20,8 @@ class UserController {
   async requestFriendship(req, res) {
     const { id } = req.params;
     const result = await userService.requestFriendship(req.user.id, id);
-    if(result.notificationEvent){
-      const io = getIO();
-      io.to(result.notificationEvent.userId).emit(
-        "new_notification",
-        result.notificationEvent.increment
-      )
+    if(result.event){
+      EventDispatcher.dispatch(result.event);
     }
     sendResponse(res, 201, true, "your request was sent successfully");
   }

@@ -4,8 +4,7 @@ const router = express.Router();
 const validateRequest = require("../middleware/validateRequest");
 const validateObjectId = require("../middleware/validateObjectId");
 const verifyJWT = require("../middleware/verifyJWT");
-const {updateMeSchema} = require("../validators/userValidator")
-
+const {updateMeSchema} = require("../validators/userValidator");
 router.get("/profile/:id",verifyJWT,validateObjectId, UserController.getProfile);
 router.get("/me",verifyJWT, UserController.getMyProfile);
 router.get("/all",verifyJWT, UserController.getUsers);

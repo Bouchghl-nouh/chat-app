@@ -18,7 +18,7 @@ import { useAppSelector } from "@/hooks/redux";
 export const NotifDropDown = () => {
   const { accessToken } = useAppSelector((state) => state.user);
   const [notifCounter, setNotifCounter] = useState(0);
-  useEffect(() => {
+   useEffect(() => {
     if (!accessToken) return;
     connectSocket(accessToken);
     socket.on("notification", (counter) => {
@@ -30,11 +30,11 @@ export const NotifDropDown = () => {
     };
   }, [accessToken]);
   useEffect(() => {
-    socket.on("new_notification", (counter) => {
+    socket.on("notification:new", (counter) => {
       setNotifCounter((prev) => prev + counter);
     });
     return () => {
-      socket.off("new_notification");
+      socket.off("notification:new");
     };
   }, []);
   return (
