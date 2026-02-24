@@ -8,7 +8,7 @@ class NotificationFactory {
     [NOTIFICATION_TYPES.FRIEND_REQUEST_ACCEPTED]: ({
       requesterId,
       recipientId,
-    }) => NotificationMapper.createAcceptRequest(requesterId, recipientId),
+    }) => NotificationMapper.createAcceptRequest(recipientId, requesterId),
     [NOTIFICATION_TYPES.FRIEND_BLOCKED]: ({ requesterId, recipientId }) =>
       NotificationMapper.createBlockFriend(recipientId, requesterId),
     [NOTIFICATION_TYPES.FRIEND_UNBLOCK]: ({ requesterId, recipientId }) =>

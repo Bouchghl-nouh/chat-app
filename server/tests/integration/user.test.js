@@ -165,7 +165,7 @@ describe("userController integrated Tests", () => {
   });
    describe("PATCH /me/friendship/unblock/:id", () => {
     test("unblock the user successfully", async () => {
-      userService.blockFriend.mockResolvedValue({
+      userService.unblockFriend.mockResolvedValue({
         _id: 1,
         status: "accepted",
       });

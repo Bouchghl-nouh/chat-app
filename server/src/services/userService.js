@@ -104,10 +104,10 @@ class UserService {
     const dataWithImages = await UserMapper.getUsersWithImages(mappedRequests);
     return UserMapper.getUsersDTO(dataWithImages);
   }
-  async acceptFriendshipRequest(recipientId, requesterId) {
+  async acceptFriendshipRequest(requesterId, recipientId) {
     const friendship = await friendshipRepo.getPendingRequest(
-      recipientId,
       requesterId,
+      recipientId,
     );
     if (!friendship) {
       throw new NotFoundError("request doesn't exist");
@@ -116,7 +116,7 @@ class UserService {
     const resp = await friendshipRepo.updateStatus(
       friendship._id,
       "accepted",
-      recipientId,
+      requesterId,
     );
     let event = null;
     if (resp) {
