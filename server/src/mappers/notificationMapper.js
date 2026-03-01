@@ -33,6 +33,20 @@ class NotificationMapper {
       increment: 1,
     };
   }
+  getNotifsDTO(notifsDB){
+    const data = notifsDB.map((element) => {
+          return {
+            id:element?._id,
+            senderId: element?.sender?._id,
+            username: element?.sender?.username ,
+            avatar: element?.sender?.avatarUrl || "",
+            message:element?.message,
+            createdAt:element?.createdAt
+
+          };
+        });
+        return data;
+  }
 }
 
 module.exports = new NotificationMapper();

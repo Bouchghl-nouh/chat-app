@@ -4,7 +4,7 @@ import { Outlet } from "react-router";
 import { useAppSelector } from "@/hooks/redux";
 import { Link } from "react-router";
 import { IconTelegram } from "@/assets/brand-icons";
-import { NotifDropDown } from "@/components/notif-dropdown";
+import { NotifDropDown } from "@/features/notifications/components/notificationDropDown";
 
 export function RootLayout() {
   const user = useAppSelector((state) => state.user);

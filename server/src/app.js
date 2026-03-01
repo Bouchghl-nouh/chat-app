@@ -4,6 +4,7 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
+const notifRoutes = require("./routes/notifRoutes")
 const app = express();
 const helmet = require("helmet");
 const errorHandler = require("./middleware/errorHandler");
@@ -26,7 +27,7 @@ app.get("/api", (req, res) => {
 // Routes
 app.use("/auth", authRoutes);
 app.use("/user", userRoutes);
-
+app.use("/notification",notifRoutes);
 app.use(errorHandler);
 // Catch-all route for 404 errors - must be last
 app.use((req, res) => {

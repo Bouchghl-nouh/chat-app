@@ -9,8 +9,8 @@ class UserMapper {
       if (dto.firstName) obj.profile.firstName = dto.firstName;
       if (dto.lastName) obj.profile.lastName = dto.lastName;
       if (dto.avatar) obj.profile.avatar = dto.avatar;
-      if(dto.description) obj.profile.description = dto.description;
-    } 
+      if (dto.description) obj.profile.description = dto.description;
+    }
     return flattenObj("", obj);
   }
   getProfileDTO(userDB, avatar) {
@@ -19,7 +19,7 @@ class UserMapper {
       lastName: userDB?.profile?.lastName || "",
       username: userDB?.username || "",
       avatar: avatar || "",
-      description : userDB?.profile?.description || ""
+      description: userDB?.profile?.description || "",
     };
   }
   getMyProfileDTO(userDB, imageUrl) {
@@ -29,7 +29,7 @@ class UserMapper {
       username: userDB?.username || "",
       email: userDB?.email || "",
       avatar: imageUrl || "",
-      description:userDB?.profile?.description || "",
+      description: userDB?.profile?.description || "",
     };
   }
   getUsersDTO(requestsDB) {
@@ -47,22 +47,24 @@ class UserMapper {
   async getUsersWithImages(DBdata) {
     return await Promise.all(
       DBdata.map(async (element) => {
-        const avatarKey = element?.profile?.avatar?.url;
-        if (!avatarKey) {
-          return {
-            ...element,
-            avatarUrl: "",
-          };
-        }
-        const resp = await getPresignedUrl(avatarKey);
-        return {
-          ...element,
-          avatarUrl: resp.data.downloadUrl ?? "",
-        };
-      })
+        return await this.getUserWithImage(element);
+      }),
     );
   }
-
+  async getUserWithImage(element) {
+    const avatarKey = element?.profile?.avatar?.url;
+    if (!avatarKey) {
+      return {
+        ...element,
+        avatarUrl: "",
+      };
+    }
+    const resp = await getPresignedUrl(avatarKey);
+    return {
+      ...element,
+      avatarUrl: resp.data.downloadUrl ?? "",
+    };
+  }
 }
 
 module.exports = new UserMapper();
