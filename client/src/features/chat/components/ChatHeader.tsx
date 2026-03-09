@@ -7,11 +7,11 @@ import {
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import type { ChatUser } from "../data/chat-types";
+import type { ChatFriend } from '../types';
 
 interface ChatHeaderProps {
-  selectedUser: ChatUser;
-  setMobileSelectedUser: (user: ChatUser | null) => void;
+  selectedUser: ChatFriend;
+  setMobileSelectedUser: (user: ChatFriend | null) => void;
 }
 
 const ChatHeader: React.FC<ChatHeaderProps> = ({
@@ -32,17 +32,17 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({
         <div className="flex items-center gap-2 lg:gap-4">
           <Avatar className="size-9 lg:size-11">
             <AvatarImage
-              src={selectedUser.profile}
+              src={selectedUser.avatar}
               alt={selectedUser.username}
             />
             <AvatarFallback>{selectedUser.username}</AvatarFallback>
           </Avatar>
           <div>
             <span className="col-start-2 row-span-2 text-sm font-medium lg:text-base">
-              {selectedUser.fullName}
+              {selectedUser.username}
             </span>
             <span className="text-muted-foreground col-start-2 row-span-2 row-start-2 line-clamp-1 block max-w-32 text-xs text-nowrap text-ellipsis lg:max-w-none lg:text-sm">
-              {selectedUser.title}
+              online
             </span>
           </div>
         </div>

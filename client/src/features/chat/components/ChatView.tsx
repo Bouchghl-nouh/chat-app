@@ -4,13 +4,14 @@ import { format } from "date-fns";
 import { Paperclip, ImagePlus, Plus, Send } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import type { ChatUser, Convo } from "../data/chat-types";
+import type { Convo } from "../data/chat-types";
 import ChatHeader from "./ChatHeader";
 import Default from "./Default"
+import type { ChatFriend } from "../types";
 interface ChatViewProps {
-  selectedUser: ChatUser | null;
-  mobileSelectedUser: ChatUser | null;
-  setMobileSelectedUser: (user: ChatUser | null) => void;
+  selectedUser: ChatFriend| null;
+  mobileSelectedUser: ChatFriend | null;
+  setMobileSelectedUser: (user: ChatFriend | null) => void;
   currentMessage: Record<string, Convo[]> | null;
 }
 

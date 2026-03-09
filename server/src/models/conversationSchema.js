@@ -17,6 +17,10 @@ const conversationSchema = new mongoose.Schema(
       adminIds: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     },
     lastMessage: { type: mongoose.Schema.Types.ObjectId, ref: "Message" },
+    isBlocked:{
+      type:Boolean,
+      default:false
+    }
   },
   { timestamps: true }
 );

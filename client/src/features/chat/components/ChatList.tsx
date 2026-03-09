@@ -5,18 +5,18 @@ import { cn } from "@/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
-import type { ChatUser } from "../data/chat-types";
+import type { ChatList,ChatFriend } from '../types';
 
 interface ChatListProps {
   search: string;
   setSearch: (value: string) => void;
-  filteredChatList: ChatUser[];
-  selectedUser: ChatUser | null;
-  setSelectedUser: (user: ChatUser | null) => void;
-  setMobileSelectedUser: (user: ChatUser | null) => void;
+  filteredChatList: ChatList["conversations"];
+  selectedUser: ChatFriend | null;
+  setSelectedUser: (user: ChatFriend | null) => void;
+  setMobileSelectedUser: (user: ChatFriend | null) => void;
 }
 
-const ChatList: React.FC<ChatListProps> = ({
+const ChatListDemo: React.FC<ChatListProps> = ({
   search,
   setSearch,
   filteredChatList,
@@ -54,12 +54,12 @@ const ChatList: React.FC<ChatListProps> = ({
 
       <ScrollArea className="-mx-3 h-full overflow-scroll p-3">
         {filteredChatList.map((chatUsr) => {
-          const { id, profile, username, messages, fullName } = chatUsr;
-          const lastConvo = messages[0];
-          const lastMsg =
-            lastConvo.sender === "You"
-              ? `You: ${lastConvo.message}`
-              : lastConvo.message;
+          const { id, avatar, username } = chatUsr;
+          // const lastConvo = messages[0];
+          // const lastMsg =
+          //   lastConvo.sender === "You"
+          //     ? `You: ${lastConvo.message}`
+          //     : lastConvo.message;
           return (
             <Fragment key={id}>
               <button
@@ -76,15 +76,15 @@ const ChatList: React.FC<ChatListProps> = ({
               >
                 <div className="flex gap-2">
                   <Avatar>
-                    <AvatarImage src={profile} alt={username} />
+                    <AvatarImage src={avatar} alt={username} />
                     <AvatarFallback>{username}</AvatarFallback>
                   </Avatar>
                   <div>
                     <span className="col-start-2 row-span-2 font-medium">
-                      {fullName}
+                      {username}
                     </span>
                     <span className="text-muted-foreground group-hover:text-accent-foreground/90 col-start-2 row-span-2 row-start-2 line-clamp-2 text-ellipsis">
-                      {lastMsg}
+                      hello world
                     </span>
                   </div>
                 </div>
@@ -98,4 +98,4 @@ const ChatList: React.FC<ChatListProps> = ({
   )
 }
 
-export default ChatList
+export default ChatListDemo

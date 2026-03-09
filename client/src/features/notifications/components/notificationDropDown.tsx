@@ -4,6 +4,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useQueryClient } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import {format} from "date-fns"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -127,7 +128,7 @@ export const NotifDropDown = () => {
                     <div>
                       <p className="text-sm  leading-none ">{notif.message}</p>
                       <p className="text-xs text-muted-foreground">
-                        {new Date(notif.createdAt).toLocaleString()}
+                        {format(new Date(notif.createdAt), "h:mm aa")}
                       </p>
                     </div>
                   </div>

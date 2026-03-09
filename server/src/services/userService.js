@@ -1,7 +1,9 @@
 const friendshipRepo = require("../repositories/friendshipRepository");
 const userRepo = require("../repositories/userRepository");
+const conversationRepo = require("../repositories/conversationRepository");
 const { upload, getPresignedUrl } = require("../utils/fileService");
 const UserMapper = require("../mappers/userMapper");
+const ConversationMapper = require("../mappers/conversationMapper");
 const NOTIFICATION_TYPES = require("../constants/notificationsTypes");
 const notificationService = require("./notificationService");
 const {
@@ -120,6 +122,9 @@ class UserService {
     );
     let event = null;
     if (resp) {
+      await conversationRepo.create({
+        participants: [requesterId, recipientId],
+      });
       event = await notificationService.notify(
         NOTIFICATION_TYPES.FRIEND_REQUEST_ACCEPTED,
         { recipientId, requesterId },
@@ -145,6 +150,13 @@ class UserService {
     );
     let event = null;
     if (resp) {
+      const conversation = await conversationRepo.findByParticipants([
+        blockerId,
+        friendId,
+      ]);
+      if (conversation) {
+         await conversationRepo.updateById(conversation._id,{isBlocked:true});
+      }
       event = await notificationService.notify(
         NOTIFICATION_TYPES.FRIEND_BLOCKED,
         { recipientId: friendId, requesterId: blockerId },
@@ -170,6 +182,14 @@ class UserService {
     );
     let event = null;
     if (resp) {
+      const conversation =
+        await conversationRepo.findByParticipants([
+          blockerId,
+          blockedId,
+        ]);
+      if (conversation) {
+         await conversationRepo.updateById(conversation._id,{isBlocked:false});
+      }
       event = await notificationService.notify(
         NOTIFICATION_TYPES.FRIEND_UNBLOCK,
         { recipientId: blockedId, requesterId: blockerId },
@@ -188,6 +208,13 @@ class UserService {
     const dataWithImages = await UserMapper.getUsersWithImages(data?.users);
     const users = UserMapper.getUsersDTO(dataWithImages);
     return { ...data, users };
+  }
+  async getFriends(filter) {
+    const { page, limit, id } = filter;
+    const data = await conversationRepo.getUserConversations(id,{page,limit});
+    const conversationsWithImages = await ConversationMapper.getConversationWithParticipantsImages(data?.conversations);
+    const conversations = ConversationMapper.getConversationsDTO(conversationsWithImages);
+    return {...data,conversations};
   }
 }
 module.exports = new UserService();

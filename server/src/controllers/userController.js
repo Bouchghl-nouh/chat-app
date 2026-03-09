@@ -61,6 +61,15 @@ class UserController {
     const data = await userService.getUsers(filter);
     sendResponse(res, 200, true, "users", data);
   }
+   async getFriends(req, res) {
+    let { page, limit } = req.query;
+    let id = req.user.id;
+    page = Number(page);
+    limit = Number(limit);
+    const filter = { page, limit, id };
+    const data = await userService.getFriends(filter);
+    sendResponse(res, 200, true, "friends", data);
+  }
 }
 
 module.exports = new UserController();
