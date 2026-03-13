@@ -6,38 +6,44 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import type { Convo } from "../data/chat-types";
 import ChatHeader from "./ChatHeader";
-import Default from "./Default"
 import type { ChatFriend } from "../types";
+import { useLocation } from "react-router-dom";
 interface ChatViewProps {
   selectedUser: ChatFriend| null;
   mobileSelectedUser: ChatFriend | null;
   setMobileSelectedUser: (user: ChatFriend | null) => void;
   currentMessage: Record<string, Convo[]> | null;
 }
-
-const ChatView: React.FC<ChatViewProps> = ({
-  selectedUser,
-  mobileSelectedUser,
-  setMobileSelectedUser,
-  currentMessage,
-}) => {
-  if (!selectedUser) {
-    return (
-     <Default />
-    );
-  }
+const currentMessage = {
+              messages: [
+                {
+                  sender: "Matt",
+                  message: "Sure thing, I'll send over the updates shortly.",
+                  timestamp: "2024-08-23T10:25:00",
+                },
+                {
+                  sender: "You",
+                  message: "Could you update the backend as well?",
+                  timestamp: "2024-08-23T10:23:00",
+                },
+                {
+                  sender: "Matt",
+                  message: "The frontend updates are done. How does it look?",
+                  timestamp: "2024-08-23T10:20:00",
+                },
+              ],
+            }
+const ChatView = () => {
+  const location = useLocation();
   return (
     <>
       <div
         className={cn(
           "bg-background absolute inset-0 start-full z-40 hidden w-full flex-1 flex-col border shadow-xs sm:static sm:z-auto sm:flex sm:rounded-md",
-          mobileSelectedUser && "start-0 flex",
+            "start-0 flex",
         )}
       >
-        <ChatHeader
-          selectedUser={selectedUser}
-          setMobileSelectedUser={setMobileSelectedUser}
-        />
+        <ChatHeader user={location.state?.user} />
 
         {/* Conversation */}
         <div className="flex flex-1 flex-col gap-2 rounded-md px-4 pt-0 pb-4">

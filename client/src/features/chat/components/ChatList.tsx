@@ -6,6 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import type { ChatList,ChatFriend } from '../types';
+import { useNavigate,useParams } from 'react-router-dom';
 
 interface ChatListProps {
   search: string;
@@ -24,6 +25,8 @@ const ChatListDemo: React.FC<ChatListProps> = ({
   setSelectedUser,
   setMobileSelectedUser,
 }) => {
+  const navigate = useNavigate();
+  const params = useParams();
   return (
     <div className="flex w-full flex-col gap-2 sm:w-56 lg:w-72 2xl:w-80">
       <div className="bg-background sticky top-0 z-10 -mx-4 px-4 pb-3 shadow-md sm:static sm:z-auto sm:mx-0 sm:p-0 sm:shadow-none">
@@ -54,7 +57,7 @@ const ChatListDemo: React.FC<ChatListProps> = ({
 
       <ScrollArea className="-mx-3 h-full overflow-scroll p-3">
         {filteredChatList.map((chatUsr) => {
-          const { id, avatar, username } = chatUsr;
+          const { id, avatar, username,conversationId } = chatUsr;
           // const lastConvo = messages[0];
           // const lastMsg =
           //   lastConvo.sender === "You"
@@ -67,11 +70,12 @@ const ChatListDemo: React.FC<ChatListProps> = ({
                 className={cn(
                   "group hover:bg-accent hover:text-accent-foreground",
                   `flex w-full rounded-md px-2 py-2 text-start text-sm`,
-                  selectedUser?.id === id && "sm:bg-muted",
+                 params.id === conversationId && "sm:bg-muted",
                 )}
                 onClick={() => {
                   setSelectedUser(chatUsr);
                   setMobileSelectedUser(chatUsr);
+                  navigate(`/chat/${chatUsr.conversationId}`,{state:{user:chatUsr}})
                 }}
               >
                 <div className="flex gap-2">

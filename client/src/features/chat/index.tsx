@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { Main } from "../../components/layouts/Main";
 import ChatListDemo from "./components/ChatList";
-import ChatView from "./components/ChatView";
 import { ThemeProvider } from "@/components/theme-provider";
 import { useFriendsList } from "./hooks/useFriendsList";
 import type { ChatFriend } from "./types";
+import { Outlet } from "react-router";
 
 const Chat = () => {
   const [search, setSearch] = useState("");
@@ -37,30 +37,7 @@ const Chat = () => {
               setMobileSelectedUser={setMobileSelectedUser}
             />
           )}
-          <ChatView
-            selectedUser={selectedUser}
-            mobileSelectedUser={mobileSelectedUser}
-            setMobileSelectedUser={setMobileSelectedUser}
-            currentMessage={{
-              messages: [
-                {
-                  sender: "Matt",
-                  message: "Sure thing, I'll send over the updates shortly.",
-                  timestamp: "2024-08-23T10:25:00",
-                },
-                {
-                  sender: "You",
-                  message: "Could you update the backend as well?",
-                  timestamp: "2024-08-23T10:23:00",
-                },
-                {
-                  sender: "Matt",
-                  message: "The frontend updates are done. How does it look?",
-                  timestamp: "2024-08-23T10:20:00",
-                },
-              ],
-            }}
-          />
+          <Outlet/>
         </section>
       </Main>
     </ThemeProvider>

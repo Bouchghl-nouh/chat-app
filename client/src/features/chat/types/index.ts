@@ -18,6 +18,7 @@ export type ChatFriend = {
     firstName: string;
     lastName: string;
     avatar: string;
+    lastSeen:string;
 }
 export interface ChatList{
   conversations: Array<ChatFriend>;

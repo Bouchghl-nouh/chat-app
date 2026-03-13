@@ -1,23 +1,18 @@
-import React from 'react'
-import {
-  ArrowLeft,
-  MoreVertical,
-  Phone,
-  Video,
-} from "lucide-react";
+import { useState, useEffect } from "react";
+import { ArrowLeft, MoreVertical, Phone, Video } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import type { ChatFriend } from '../types';
-
+import type { ChatFriend } from "../types";
+import { useNavigate } from "react-router-dom";
+import { formatDistanceToNow } from "date-fns";
+import { socket } from "@/socket/socket";
 interface ChatHeaderProps {
-  selectedUser: ChatFriend;
-  setMobileSelectedUser: (user: ChatFriend | null) => void;
+  user: ChatFriend;
 }
 
-const ChatHeader: React.FC<ChatHeaderProps> = ({
-  selectedUser,
-  setMobileSelectedUser,
-}) => {
+const ChatHeader: React.FC<ChatHeaderProps> = ({ user }) => {
+  const navigate = useNavigate();
+  const [isOnline, setIsOnline] = useState(false);
   return (
     <div className="bg-card mb-1 flex flex-none justify-between p-4 shadow-lg sm:rounded-t-md">
       <div className="flex gap-3">
@@ -25,24 +20,23 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({
           size="icon"
           variant="ghost"
           className="-ms-2 h-full sm:hidden"
-          onClick={() => setMobileSelectedUser(null)}
+          onClick={() => navigate("/")}
         >
           <ArrowLeft className="rtl:rotate-180" />
         </Button>
         <div className="flex items-center gap-2 lg:gap-4">
           <Avatar className="size-9 lg:size-11">
-            <AvatarImage
-              src={selectedUser.avatar}
-              alt={selectedUser.username}
-            />
-            <AvatarFallback>{selectedUser.username}</AvatarFallback>
+            <AvatarImage src={user.avatar} alt={user.username} />
+            <AvatarFallback>{user.username.charAt(0)}</AvatarFallback>
           </Avatar>
           <div>
             <span className="col-start-2 row-span-2 text-sm font-medium lg:text-base">
-              {selectedUser.username}
+              {user.username}
             </span>
             <span className="text-muted-foreground col-start-2 row-span-2 row-start-2 line-clamp-1 block max-w-32 text-xs text-nowrap text-ellipsis lg:max-w-none lg:text-sm">
-              online
+              {isOnline
+                ? "online"
+                : `last seen ${formatDistanceToNow(new Date(user?.lastSeen), { addSuffix: true })}`}
             </span>
           </div>
         </div>
@@ -73,7 +67,7 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({
         </Button>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default ChatHeader
+export default ChatHeader;

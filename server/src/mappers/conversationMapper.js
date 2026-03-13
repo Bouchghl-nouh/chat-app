@@ -16,6 +16,7 @@ class ConversationMapper {
     const conversationsDTO = conversations.map((conversation)=>({
         conversationId:conversation._id,
         ...UserMapper.getUsersDTO(conversation.participants)[0],
+        lastSeen : conversation.participants[0].lastSeen,
         lastMessage:conversation.lastMessage,
     }))
     return conversationsDTO;

@@ -4,6 +4,8 @@ import { userRoutes } from "../features/user/routes.tsx";
 import Chat from "../features/chat/index.tsx";
 import ProtectedRoute from "@/components/ProtectedRoute.tsx";
 import { RootLayout } from "@/components/layouts/RootLayout.tsx";
+import Default from "@/features/chat/components/Default.tsx";
+import ChatView from "@/features/chat/components/ChatView.tsx";
 export const routes = createBrowserRouter([
   {
     element: <RootLayout />,
@@ -14,8 +16,19 @@ export const routes = createBrowserRouter([
         element: <ProtectedRoute />,
         children: [
           {
-            index:true,
+            path:"",
             element: <Chat />,
+            children:[
+              {
+                path:"",
+                element:<Default/>
+              },
+              {
+                path:"chat/:id",
+                element:<ChatView/>
+              }
+
+            ],
           },
           ...userRoutes
         ],
