@@ -12,7 +12,7 @@ interface ChatHeaderProps {
 const ChatHeader: React.FC<ChatHeaderProps> = ({ user }) => {
   const navigate = useNavigate();
   const onlineMap = useAppSelector((state) => state.presence.onlineMap);
-  const status = onlineMap[user.id];
+  const status = onlineMap[user?.id];
   const getStatusText = () => {
     if (status === true) return "online";
     if (typeof status === "string")
@@ -32,13 +32,13 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({ user }) => {
         </Button>
         <div className="flex items-center gap-2 lg:gap-4">
           <Avatar className="size-13 lg:size-13 ">
-            <AvatarImage src={user.avatar} alt={user.username} />
-            <AvatarFallback>{user.username.charAt(0)}</AvatarFallback>
+            <AvatarImage src={user?.avatar} alt={user?.username} />
+            <AvatarFallback>{user?.username.charAt(0)}</AvatarFallback>
             <AvatarBadge status={status===true?"online":"offline"}/>
           </Avatar>
           <div>
             <span className="col-start-2 row-span-2 text-sm font-medium lg:text-base">
-              {user.username}
+              {user?.username}
             </span>
             <span className="text-muted-foreground col-start-2 row-span-2 row-start-2 line-clamp-1 block max-w-32 text-xs text-nowrap text-ellipsis lg:max-w-none lg:text-sm">
               {getStatusText()}
