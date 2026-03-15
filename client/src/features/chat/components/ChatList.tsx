@@ -1,13 +1,10 @@
-import React from 'react'
-import { Fragment } from "react/jsx-runtime";
+import React from "react";
 import { Search as SearchIcon, MessagesSquare } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Separator } from "@/components/ui/separator";
-import type { ChatList,ChatFriend } from '../types';
-import { useNavigate,useParams } from 'react-router-dom';
-
+import type { ChatList, ChatFriend } from "../types";
+import { useNavigate, useParams } from "react-router-dom";
+import ChatListItem from "./ChatListItem";
 interface ChatListProps {
   search: string;
   setSearch: (value: string) => void;
@@ -21,9 +18,6 @@ const ChatListDemo: React.FC<ChatListProps> = ({
   search,
   setSearch,
   filteredChatList,
-  selectedUser,
-  setSelectedUser,
-  setMobileSelectedUser,
 }) => {
   const navigate = useNavigate();
   const params = useParams();
@@ -57,49 +51,27 @@ const ChatListDemo: React.FC<ChatListProps> = ({
 
       <ScrollArea className="-mx-3 h-full overflow-scroll p-3">
         {filteredChatList.map((chatUsr) => {
-          const { id, avatar, username,conversationId } = chatUsr;
           // const lastConvo = messages[0];
           // const lastMsg =
           //   lastConvo.sender === "You"
           //     ? `You: ${lastConvo.message}`
           //     : lastConvo.message;
           return (
-            <Fragment key={id}>
-              <button
-                type="button"
-                className={cn(
-                  "group hover:bg-accent hover:text-accent-foreground",
-                  `flex w-full rounded-md px-2 py-2 text-start text-sm`,
-                 params.id === conversationId && "sm:bg-muted",
-                )}
-                onClick={() => {
-                  setSelectedUser(chatUsr);
-                  setMobileSelectedUser(chatUsr);
-                  navigate(`/chat/${chatUsr.conversationId}`,{state:{user:chatUsr}})
-                }}
-              >
-                <div className="flex gap-2">
-                  <Avatar>
-                    <AvatarImage src={avatar} alt={username} />
-                    <AvatarFallback className="bg-blue-400 text-white">{username.charAt(0)}</AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <span className="col-start-2 row-span-2 font-medium">
-                      {username}
-                    </span>
-                    <span className="text-muted-foreground group-hover:text-accent-foreground/90 col-start-2 row-span-2 row-start-2 line-clamp-2 text-ellipsis">
-                      hello world
-                    </span>
-                  </div>
-                </div>
-              </button>
-              <Separator className="my-1" />
-            </Fragment>
+            <ChatListItem
+              key={chatUsr.conversationId}
+              chatUsr={chatUsr}
+              isSelected={params.is === chatUsr.conversationId}
+              onSelect={() =>
+                navigate(`/chat/${chatUsr.conversationId}`, {
+                  state: { user: chatUsr },
+                })
+              }
+            />
           );
         })}
       </ScrollArea>
     </div>
-  )
-}
+  );
+};
 
-export default ChatListDemo
+export default ChatListDemo;
