@@ -1,18 +1,24 @@
-import { useState, useEffect } from "react";
 import { ArrowLeft, MoreVertical, Phone, Video } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage,AvatarBadge } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import type { ChatFriend } from "../types";
 import { useNavigate } from "react-router-dom";
 import { formatDistanceToNow } from "date-fns";
-import { socket } from "@/socket/socket";
+import { useAppSelector } from "@/hooks/redux";
 interface ChatHeaderProps {
   user: ChatFriend;
 }
 
 const ChatHeader: React.FC<ChatHeaderProps> = ({ user }) => {
   const navigate = useNavigate();
-  const [isOnline, setIsOnline] = useState(false);
+  const onlineMap = useAppSelector((state) => state.presence.onlineMap);
+  const status = onlineMap[user.id];
+  const getStatusText = () => {
+    if (status === true) return "online";
+    if (typeof status === "string")
+      return `last seen ${formatDistanceToNow(status, { addSuffix: true })}`;
+    return "offline";
+  };
   return (
     <div className="bg-card mb-1 flex flex-none justify-between p-4 shadow-lg sm:rounded-t-md">
       <div className="flex gap-3">
@@ -25,18 +31,17 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({ user }) => {
           <ArrowLeft className="rtl:rotate-180" />
         </Button>
         <div className="flex items-center gap-2 lg:gap-4">
-          <Avatar className="size-9 lg:size-11">
+          <Avatar className="size-13 lg:size-13 ">
             <AvatarImage src={user.avatar} alt={user.username} />
             <AvatarFallback>{user.username.charAt(0)}</AvatarFallback>
+            <AvatarBadge status={status===true?"online":"offline"}/>
           </Avatar>
           <div>
             <span className="col-start-2 row-span-2 text-sm font-medium lg:text-base">
               {user.username}
             </span>
             <span className="text-muted-foreground col-start-2 row-span-2 row-start-2 line-clamp-1 block max-w-32 text-xs text-nowrap text-ellipsis lg:max-w-none lg:text-sm">
-              {isOnline
-                ? "online"
-                : `last seen ${formatDistanceToNow(new Date(user?.lastSeen), { addSuffix: true })}`}
+              {getStatusText()}
             </span>
           </div>
         </div>

@@ -213,7 +213,7 @@ class UserService {
     const { page, limit, id } = filter;
     const data = await conversationRepo.getUserConversations(id,{page,limit});
     const conversationsWithImages = await ConversationMapper.getConversationWithParticipantsImages(data?.conversations);
-    const conversations = ConversationMapper.getConversationsDTO(conversationsWithImages);
+    const conversations = await ConversationMapper.getConversationsDTO(conversationsWithImages);
     return {...data,conversations};
   }
 }

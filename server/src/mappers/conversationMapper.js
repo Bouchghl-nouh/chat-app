@@ -1,4 +1,6 @@
 const UserMapper = require("./userMapper");
+const userStore = require("../utils/userStore")
+
 class ConversationMapper {
   async getConversationWithParticipantsImages(conversations) {
     return await Promise.all(
@@ -12,15 +14,17 @@ class ConversationMapper {
         }))
     )
   }
-  getConversationsDTO(conversations){
-    const conversationsDTO = conversations.map((conversation)=>({
+ async getConversationsDTO(conversations){
+    const conversationsDTO = await Promise.all(conversations.map(async(conversation)=>({
         conversationId:conversation._id,
+        lastSeen :conversation.participants[0].lastSeen,
         ...UserMapper.getUsersDTO(conversation.participants)[0],
-        lastSeen : conversation.participants[0].lastSeen,
+        isOnline :await userStore.isOnline(conversation.participants[0]._id.toString()),
         lastMessage:conversation.lastMessage,
-    }))
+    })))
     return conversationsDTO;
   }
 }
+
 
 module.exports = new ConversationMapper();

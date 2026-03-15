@@ -15,37 +15,26 @@ class FriendshipRepository {
       ],
     });
   }
-  async getFriends(userId, { page, limit }) {
-    const skip = (page - 1) * limit;
+  async getFriends(userId) {
     const query = {
       $or: [
         { requester: userId, status: "accepted" },
         { recipient: userId, status: "accepted" },
       ],
     };
-    let [friends, total] = await Promise.all([
-      friendshipSchema
-        .find(query)
-        .skip(skip)
-        .limit(limit)
-        .populate("requester", "username profile lastSeen")
-        .populate("recipient", "username profile lastSeen")
-        .lean(),
-      friendshipSchema.countDocuments(query),
-    ]);
-    friends = friends.map((friend) => {
+    const data = await friendshipSchema
+      .find(query)
+      .populate("requester", "username")
+      .populate("recipient", "username")
+      .lean();
+    const friends = data.map((friend) => {
       const isRequester =
         friend.requester._id.toString() === userId
-          ? friend.recipient
-          : friend.requester;
+          ? friend.recipient._id.toString()
+          : friend.requester._id.toString();
       return isRequester;
     });
-    return {
-      friends,
-      total,
-      page,
-      pages: Math.ceil(total / limit),
-    };
+    return friends;
   }
   async getPendingRequests(userId) {
     return await friendshipSchema

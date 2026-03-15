@@ -5,9 +5,10 @@ import { useAppSelector } from "@/hooks/redux";
 import { Link } from "react-router";
 import { IconTelegram } from "@/assets/brand-icons";
 import { NotifDropDown } from "@/features/notifications/components/notificationDropDown";
-
+import { usePresence } from "@/hooks/usePresence";
 export function RootLayout() {
   const user = useAppSelector((state) => state.user);
+  usePresence();
   return (
     <div className="h-screen flex flex-col">
       <div className="absolute self-end px-4 py-2 ">
