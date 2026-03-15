@@ -81,7 +81,7 @@ const ChatListDemo: React.FC<ChatListProps> = ({
                 <div className="flex gap-2">
                   <Avatar>
                     <AvatarImage src={avatar} alt={username} />
-                    <AvatarFallback>{username}</AvatarFallback>
+                    <AvatarFallback className="bg-blue-400 text-white">{username.charAt(0)}</AvatarFallback>
                   </Avatar>
                   <div>
                     <span className="col-start-2 row-span-2 font-medium">

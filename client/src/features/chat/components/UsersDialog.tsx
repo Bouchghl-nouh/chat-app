@@ -61,7 +61,7 @@ export default function UsersDialog({
                             alt={user.username}
                             className="rounded-full"
                           />
-                          <AvatarFallback>
+                          <AvatarFallback className="bg-blue-400 text-white">
                             {user.username?.charAt(0)}
                           </AvatarFallback>
                         </Avatar>
