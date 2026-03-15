@@ -30,3 +30,6 @@ export const notifications = async (
 export const markAsRead = async (notifId: string): Promise<void> => {
   return http.patch(`/notification/read/${notifId}`, undefined, undefined, false);
 }
+export const markAllAsRead = async (): Promise<void> => {
+  return http.patch(`/notification/readAll`, undefined, undefined, false);
+}

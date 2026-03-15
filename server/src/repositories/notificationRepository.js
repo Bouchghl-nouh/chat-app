@@ -23,7 +23,7 @@ class NotificationSchema {
         .skip(skip)
         .limit(limit)
         .lean()
-        .sort({createdAt:-1})
+        .sort({ createdAt: -1 })
         .populate("sender", "username profile.avatar lastSeen"),
       Notification.countDocuments({ receiver, isRead: false }),
     ]);
@@ -34,11 +34,17 @@ class NotificationSchema {
       pages: Math.ceil(total / limit),
     };
   }
-  async update(notifId) {
+  async read(notifId) {
     return await Notification.findByIdAndUpdate(
       notifId,
       { isRead: true },
       { new: true },
+    );
+  }
+  async readAll(receiver) {
+    return await Notification.updateMany(
+      { receiver, isRead: false },
+      { $set: { isRead: true } },
     );
   }
 }

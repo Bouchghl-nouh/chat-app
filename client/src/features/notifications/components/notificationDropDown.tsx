@@ -4,7 +4,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useQueryClient } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import {formatDistanceToNow } from 'date-fns';
+import { formatDistanceToNow } from "date-fns";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -21,6 +21,7 @@ import { useAppSelector } from "@/hooks/redux";
 import { useNotifications } from "@/features/notifications/hooks/useNotifs";
 import type { Notif } from "@/features/notifications/api/notifications.api";
 import { useReadNotification } from "@/features/notifications/hooks/useReadNotif";
+import { useReadAllNotifications } from "../hooks/useReadAllNotifs";
 export const NotifDropDown = () => {
   const queryClient = useQueryClient();
   const { accessToken } = useAppSelector((state) => state.user);
@@ -31,7 +32,7 @@ export const NotifDropDown = () => {
   const { data, isLoading, error, fetchNextPage, hasNextPage } =
     useNotifications();
   const readNotif = useReadNotification();
-
+  const readAllNotifs = useReadAllNotifications();
   useEffect(() => {
     if (!accessToken) return;
     connectSocket(accessToken);
@@ -62,6 +63,10 @@ export const NotifDropDown = () => {
     readNotif.mutate(notifId);
     navigate("profile/" + profileId);
   };
+  const handleReadAllNotifs = () => {
+    readAllNotifs.mutate();
+    setOpen(false);
+  };
   return (
     <div>
       <DropdownMenu open={open} onOpenChange={() => setOpen(!open)}>
@@ -89,7 +94,7 @@ export const NotifDropDown = () => {
               </div>
               <p
                 className="cursor-pointer text-blue-500"
-                onClick={() => setOpen(!open)}
+                onClick={handleReadAllNotifs}
               >
                 mark all read
               </p>
@@ -128,7 +133,9 @@ export const NotifDropDown = () => {
                     <div>
                       <p className="text-sm  leading-none ">{notif.message}</p>
                       <p className="text-xs text-muted-foreground">
-                        {formatDistanceToNow(new Date(notif.createdAt), { addSuffix: true })}
+                        {formatDistanceToNow(new Date(notif.createdAt), {
+                          addSuffix: true,
+                        })}
                       </p>
                     </div>
                   </div>

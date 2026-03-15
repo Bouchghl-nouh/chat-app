@@ -36,7 +36,7 @@ class NotificationService {
     };
   }
   async readNotif(notifId) {
-    const data = await notificationRepo.update(notifId);
+    const data = await notificationRepo.read(notifId);
     return {
       event: {
         type: "NOTIFICATION_CREATED",
@@ -46,6 +46,18 @@ class NotificationService {
         },
       },
     };
+  }
+  async readAll(receiver){
+    const data = await notificationRepo.readAll(receiver);
+    return {
+      event:{
+        type:"NOTIFICATION_CREATED",
+        payload:{
+          receiver:receiver,
+          increment:-data.modifiedCount
+        }
+      }
+    }
   }
 }
 module.exports = new NotificationService();

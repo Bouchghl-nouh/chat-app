@@ -18,6 +18,14 @@ class UserController {
     }
     sendResponse(res, 200, true, "notification read");
   }
+  async readAll(req,res){
+   const userId = req.user.id;
+   const result = await notifService.readAll(userId); 
+   if(result.event){
+    EventDispatcher.dispatch(result.event);
+   }
+   sendResponse(res,200,true,"all notifications have been read");
+  }
 }
 
 module.exports = new UserController();
